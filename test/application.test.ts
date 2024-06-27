@@ -22,8 +22,7 @@ it('should return an error if the cpf is not valid', async () => {
 		email: `john.doe${Math.random()}@gmail.com`,
 		cpf: "6666",
 	};
-	const outputClient = await signup(input); 
-	console.log({outputClient})
+	const outputClient = await signup(input);
 
 	expect(outputClient.code).toBe(400);
 	expect(outputClient.error).toBe('Invalid CPF');
