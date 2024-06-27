@@ -1,5 +1,6 @@
+import { createAccount, getAccountByEmail, getAccountById } from './resource';
+
 import { Client } from './database/interfaces/Client';
-import db from './database/knex';
 import { randomUUID } from 'crypto';
 import { validateCpf } from './validateCpf';
 
@@ -24,7 +25,7 @@ export async function signup({ cpf, name, email }: any): Promise<SignupOutput> {
       return { error: 'Invalid Email', code: 400 };
     }
 
-    const isEmailAlreadyRegistered = await db<Client>('client').where({ email }).first();
+    const isEmailAlreadyRegistered = await getAccountByEmail(email)
 
     if (isEmailAlreadyRegistered) {
       return { error: 'Email already registered', code: 400 };
@@ -37,10 +38,8 @@ export async function signup({ cpf, name, email }: any): Promise<SignupOutput> {
       email,
       cpf,
     };
-    const [insertedClient] = await db<Client>('client')
-    .insert(newClient)
-    .returning('*');
- 
+   
+    const insertedClient = await createAccount(newClient);
     return insertedClient;
   } catch (err: any) {
     console.error(err.message);
@@ -51,7 +50,7 @@ export async function signup({ cpf, name, email }: any): Promise<SignupOutput> {
 type GetClientOutput = any | ErrorOutput;
 export async function getClient(account_id: string): Promise<GetClientOutput> {
   try {
-    const client = await db<Client>('client').where({ account_id }).first();
+    const client = await getAccountById(account_id);
     if (client) {
       return client;
     } else {
