@@ -22,10 +22,7 @@ it('should return an error if the cpf is not valid', async () => {
 		email: `john.doe${Math.random()}@gmail.com`,
 		cpf: "6666",
 	};
-	const outputClient = await signup(input);
-
-	expect(outputClient.code).toBe(400);
-	expect(outputClient.error).toBe('Invalid CPF');
+	await expect(() => signup(input)).rejects.toThrow('Invalid CPF');
 })
 
 it('should return an error if the name is not valid', async () => {
@@ -34,10 +31,7 @@ it('should return an error if the name is not valid', async () => {
 		email: `john.doe${Math.random()}@gmail.com`,
 		cpf: "87748248800",
 	};
-	const outputClient = await signup(input);
-
-	expect(outputClient.code).toBe(400);
-	expect(outputClient.error).toBe('Invalid Name');
+	await expect(() => signup(input)).rejects.toThrow('Invalid Name');
 })
 
 it('should return an error if the email is not valid', async () => {
@@ -46,9 +40,6 @@ it('should return an error if the email is not valid', async () => {
 		email: `john.doe${Math.random()}gmail.com`,
 		cpf: "87748248800",
 	};
-	const outputClient = await signup(input);
-
-	expect(outputClient.code).toBe(400);
-	expect(outputClient.error).toBe('Invalid Email');
+	await expect(() => signup(input)).rejects.toThrow('Invalid Email');
 })
 
