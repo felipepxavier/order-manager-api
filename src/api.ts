@@ -1,9 +1,8 @@
-import { getClient, signup } from './application';
+import { getClient, signup } from "./application";
 
 import express from "express";
 
 //import db from './database/knex';
-
 
 const port = 3000;
 const app = express();
@@ -22,16 +21,16 @@ const app = express();
 
 app.use(express.json());
 
-app.post('/client', async (req, res) => {
-   try {
+app.post("/client", async (req, res) => {
+  try {
     const output = await signup(req.body);
     res.status(201).json(output);
-   } catch (error: any) {
+  } catch (error: any) {
     res.status(422).json({ message: error.message });
-   }
+  }
 });
 
-app.get('/client/:account_id', async (req, res) => {
+app.get("/client/:account_id", async (req, res) => {
   try {
     const output = await getClient(req.params.account_id);
     res.json(output);
