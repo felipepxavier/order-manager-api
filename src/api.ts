@@ -23,21 +23,21 @@ const app = express();
 app.use(express.json());
 
 app.post('/client', async (req, res) => {
+   try {
     const output = await signup(req.body);
-    if ('error' in output) {
-      res.status(output.code).json(output);
-    } else {  
-      res.status(201).json(output);
-    }
+    res.status(201).json(output);
+   } catch (error: any) {
+    res.status(422).json({ message: error.message });
+   }
 });
 
 app.get('/client/:account_id', async (req, res) => {
+  try {
     const output = await getClient(req.params.account_id);
-    if ('error' in output) {
-      res.status(output.code).json(output);
-    } else {
-      res.json(output);
-    }
+    res.json(output);
+  } catch (error: any) {
+    res.status(422).json({ message: error.message });
+  }
 });
 
 app.listen(port, () => {

@@ -1,3 +1,5 @@
+//driven side = resource side
+
 import { Client } from './database/interfaces/Client';
 import db from './database/knex';
 
