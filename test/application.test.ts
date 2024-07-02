@@ -1,4 +1,15 @@
-import { getClient, signup } from "../src/application";
+import { AccountDAOMemory } from "../src/resource/AccountDAO";
+import { GetClient } from "../src/application/GetClient";
+import { Signup } from "../src/application/Signup";
+
+let signup: Signup;
+let getClient: GetClient;
+
+beforeEach(async () => {
+  const accountDAO = new AccountDAOMemory();
+  signup = new Signup(accountDAO);
+  getClient = new GetClient(accountDAO);
+});
 
 it("should create an account correctly", async () => {
   const input = {
@@ -6,10 +17,10 @@ it("should create an account correctly", async () => {
     email: `john.doe${Math.random()}@gmail.com`,
     cpf: "87748248800",
   };
-  const outputClient = await signup(input);
+  const outputClient = await signup.execute(input);
   expect(outputClient.account_id).toBeDefined();
 
-  const outputGetClient = await getClient(outputClient.account_id);
+  const outputGetClient = await getClient.execute(outputClient.account_id);
 
   expect(outputGetClient.name).toBe(input.name);
   expect(outputGetClient.email).toBe(input.email);
@@ -22,7 +33,7 @@ it("should return an error if the cpf is not valid", async () => {
     email: `john.doe${Math.random()}@gmail.com`,
     cpf: "6666",
   };
-  await expect(() => signup(input)).rejects.toThrow("Invalid CPF");
+  await expect(() => signup.execute(input)).rejects.toThrow("Invalid CPF");
 });
 
 it("should return an error if the name is not valid", async () => {
@@ -31,7 +42,7 @@ it("should return an error if the name is not valid", async () => {
     email: `john.doe${Math.random()}@gmail.com`,
     cpf: "87748248800",
   };
-  await expect(() => signup(input)).rejects.toThrow("Invalid Name");
+  await expect(() => signup.execute(input)).rejects.toThrow("Invalid Name");
 });
 
 it("should return an error if the email is not valid", async () => {
@@ -40,5 +51,5 @@ it("should return an error if the email is not valid", async () => {
     email: `john.doe${Math.random()}gmail.com`,
     cpf: "87748248800",
   };
-  await expect(() => signup(input)).rejects.toThrow("Invalid Email");
+  await expect(() => signup.execute(input)).rejects.toThrow("Invalid Email");
 });

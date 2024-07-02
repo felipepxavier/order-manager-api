@@ -1,5 +1,6 @@
-import { getClient, signup } from "./application";
-
+import { AccountDAODatabase } from "../resource/AccountDAO";
+import { GetClient } from "../application/GetClient";
+import { Signup } from "../application/Signup";
 import express from "express";
 
 //import db from './database/knex';
@@ -23,7 +24,9 @@ app.use(express.json());
 
 app.post("/client", async (req, res) => {
   try {
-    const output = await signup(req.body);
+    const accountDAO = new AccountDAODatabase();
+    const signup = new Signup(accountDAO);
+    const output = await signup.execute(req.body);
     res.status(201).json(output);
   } catch (error: any) {
     res.status(422).json({ message: error.message });
@@ -32,7 +35,9 @@ app.post("/client", async (req, res) => {
 
 app.get("/client/:account_id", async (req, res) => {
   try {
-    const output = await getClient(req.params.account_id);
+    const accountDAO = new AccountDAODatabase();
+    const getClient = new GetClient(accountDAO);
+    const output = await getClient.execute(req.params.account_id);
     res.json(output);
   } catch (error: any) {
     res.status(422).json({ message: error.message });

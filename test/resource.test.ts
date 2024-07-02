@@ -1,9 +1,4 @@
-import {
-  createAccount,
-  getAccountByEmail,
-  getAccountById,
-} from "../src/resource";
-
+import { AccountDAODatabase } from "../src/resource/AccountDAO";
 import { randomUUID } from "crypto";
 
 it("should create a record in the customer table and query by id", async () => {
@@ -13,8 +8,12 @@ it("should create a record in the customer table and query by id", async () => {
     email: `john.doe${Math.random()}@gmail.com`,
     cpf: "87748248800",
   };
-  const outputClient = await createAccount(account);
-  const savedAccountById = await getAccountById(outputClient?.account_id);
+  const accountDAO = new AccountDAODatabase();
+  const outputClient = await accountDAO.createAccount(account);
+
+  const savedAccountById = await accountDAO.getAccountById(
+    outputClient?.account_id,
+  );
 
   expect(savedAccountById?.account_id).toBe(account.account_id);
   expect(savedAccountById?.name).toBe(account.name);
@@ -29,8 +28,11 @@ it("should create a record in the customer table and consult by email", async ()
     email: `john.doe${Math.random()}@gmail.com`,
     cpf: "87748248800",
   };
-  const outputClient = await createAccount(account);
-  const savedAccountByEmail = await getAccountByEmail(outputClient?.email);
+  const accountDAO = new AccountDAODatabase();
+  const outputClient = await accountDAO.createAccount(account);
+  const savedAccountByEmail = await accountDAO.getAccountByEmail(
+    outputClient?.email,
+  );
 
   expect(savedAccountByEmail?.account_id).toBe(account.account_id);
   expect(savedAccountByEmail?.name).toBe(account.name);
