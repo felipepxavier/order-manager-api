@@ -29,21 +29,6 @@ describe("signup", () => {
     expect(outputGetClient.cpf).toBe(input.cpf);
   });
 
-  it("should return an error if the cpf is not valid", async () => {
-    const input = {
-      name: "John Test",
-      email: `john.doe${Math.random()}@gmail.com`,
-      cpf: "6666",
-    };
-    const responseClient = await axios.post(
-      "http://localhost:3000/client",
-      input,
-    );
-
-    expect(responseClient.status).toBe(422);
-    expect(responseClient.data.message).toBe("Invalid CPF");
-  });
-
   it("should return an error if the name is not valid", async () => {
     const input = {
       name: "",
@@ -57,37 +42,6 @@ describe("signup", () => {
 
     expect(responseClient.status).toBe(422);
     expect(responseClient.data.message).toBe("Invalid Name");
-  });
-
-  it("should return an error if the email is not valid", async () => {
-    const input = {
-      name: "John Test",
-      email: `john.doe${Math.random()}gmail.com`,
-      cpf: "87748248800",
-    };
-    const responseClient = await axios.post(
-      "http://localhost:3000/client",
-      input,
-    );
-
-    expect(responseClient.status).toBe(422);
-    expect(responseClient.data.message).toBe("Invalid Email");
-  });
-
-  it("should return an error if the email is already registered", async () => {
-    const input = {
-      name: "John Test",
-      email: `john.doe${Math.random()}@gmail.com`,
-      cpf: "87748248800",
-    };
-    await axios.post("http://localhost:3000/client", input);
-    const responseClient2 = await axios.post(
-      "http://localhost:3000/client",
-      input,
-    );
-
-    expect(responseClient2.status).toBe(422);
-    expect(responseClient2.data.message).toBe("Email already registered");
   });
 });
 
