@@ -1,14 +1,14 @@
-//driven side = resource side
-
 import { Client } from "../database/interfaces/Client";
 import db from "../database/knex";
 
+// [Driven/Resource] Port
 export interface AccountDAO {
   getAccountByEmail(email: string): Promise<Client | undefined>;
   getAccountById(account_id: string): Promise<Client | undefined>;
   createAccount(client: any): Promise<Client>;
 }
 
+// [Driven/Resource] Adapter
 export class AccountDAODatabase implements AccountDAO {
   async getAccountByEmail(email: string): Promise<Client | undefined> {
     return await db<Client>("client").where({ email }).first();
@@ -27,6 +27,7 @@ export class AccountDAODatabase implements AccountDAO {
   }
 }
 
+// [Driven/Resource] Adapter
 export class AccountDAOMemory implements AccountDAO {
   private clients: Client[] = [];
 

@@ -53,3 +53,13 @@ it("should return an error if the email is not valid", async () => {
   };
   await expect(() => signup.execute(input)).rejects.toThrow("Invalid Email");
 });
+
+it("should return an error if the email is already registered", async () => {
+  const input = {
+    name: "John Test",
+    email: `john.doe${Math.random()}@gmail.com`,
+    cpf: "87748248800",
+  };
+  await signup.execute(input)
+  await expect(() => signup.execute(input)).rejects.toThrow("Email already registered");
+});
