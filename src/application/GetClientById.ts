@@ -4,7 +4,7 @@ export type ErrorOutput = { error: string; code: number };
 
 type GetClientOutput = any | ErrorOutput;
 
-export class GetClient {
+export class GetClientById {
   constructor(readonly clientDAO: ClientDAO) {}
 
   async execute(client_id: string): Promise<GetClientOutput> {

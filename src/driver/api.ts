@@ -1,6 +1,6 @@
 import { ClientDAODatabase } from "../resource/ClientDAO";
-import { GetClient } from "../application/GetClient";
 import { GetClientByCpf } from "../application/GetClientByCpf";
+import { GetClientById } from "../application/GetClientById";
 import { Signup } from "../application/Signup";
 import express from "express";
 
@@ -37,7 +37,7 @@ app.post("/client", async (req, res) => {
 app.get("/client/:client_id", async (req, res) => {
   try {
     const accountDAO = new ClientDAODatabase();
-    const getClient = new GetClient(accountDAO);
+    const getClient = new GetClientById(accountDAO);
     const output = await getClient.execute(req.params.client_id);
     res.json(output);
   } catch (error: any) {
