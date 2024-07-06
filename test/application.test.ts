@@ -1,16 +1,16 @@
 import { ClientDAOMemory } from "../src/resource/ClientDAO";
-import { GetClient } from "../src/application/GetClient";
 import { GetClientByCpf } from "../src/application/GetClientByCpf";
+import { GetClientById } from "../src/application/GetClientById";
 import { Signup } from "../src/application/Signup";
 
 let signup: Signup;
-let getClient: GetClient;
+let getClientById: GetClientById;
 let getClientByCpf: GetClientByCpf;
 
 beforeEach(async () => {
   const clientDAO = new ClientDAOMemory();
   signup = new Signup(clientDAO);
-  getClient = new GetClient(clientDAO);
+  getClientById = new GetClientById(clientDAO);
   getClientByCpf = new GetClientByCpf(clientDAO);
 });
 
@@ -23,7 +23,7 @@ it("should create an account correctly", async () => {
   const outputClient = await signup.execute(input);
   expect(outputClient.account_id).toBeDefined();
 
-  const outputGetClient = await getClient.execute(outputClient.account_id);
+  const outputGetClient = await getClientById.execute(outputClient.account_id);
 
   expect(outputGetClient.name).toBe(input.name);
   expect(outputGetClient.email).toBe(input.email);
