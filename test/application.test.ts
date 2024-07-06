@@ -1,4 +1,4 @@
-import { AccountDAOMemory } from "../src/resource/AccountDAO";
+import { ClientDAOMemory } from "../src/resource/ClientDAO";
 import { GetClient } from "../src/application/GetClient";
 import { Signup } from "../src/application/Signup";
 
@@ -6,9 +6,9 @@ let signup: Signup;
 let getClient: GetClient;
 
 beforeEach(async () => {
-  const accountDAO = new AccountDAOMemory();
-  signup = new Signup(accountDAO);
-  getClient = new GetClient(accountDAO);
+  const clientDAO = new ClientDAOMemory();
+  signup = new Signup(clientDAO);
+  getClient = new GetClient(clientDAO);
 });
 
 it("should create an account correctly", async () => {

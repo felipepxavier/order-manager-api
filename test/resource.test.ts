@@ -1,4 +1,4 @@
-import { AccountDAODatabase } from "../src/resource/AccountDAO";
+import { ClientDAODatabase } from "../src/resource/ClientDAO";
 import { randomUUID } from "crypto";
 
 it("should create a record in the customer table and query by id", async () => {
@@ -8,10 +8,10 @@ it("should create a record in the customer table and query by id", async () => {
     email: `john.doe${Math.random()}@gmail.com`,
     cpf: "87748248800",
   };
-  const accountDAO = new AccountDAODatabase();
-  const outputClient = await accountDAO.createAccount(account);
+  const accountDAO = new ClientDAODatabase();
+  const outputClient = await accountDAO.createClient(account);
 
-  const savedAccountById = await accountDAO.getAccountById(
+  const savedAccountById = await accountDAO.getClientById(
     outputClient?.account_id,
   );
 
@@ -28,9 +28,9 @@ it("should create a record in the customer table and consult by email", async ()
     email: `john.doe${Math.random()}@gmail.com`,
     cpf: "87748248800",
   };
-  const accountDAO = new AccountDAODatabase();
-  const outputClient = await accountDAO.createAccount(account);
-  const savedAccountByEmail = await accountDAO.getAccountByEmail(
+  const accountDAO = new ClientDAODatabase();
+  const outputClient = await accountDAO.createClient(account);
+  const savedAccountByEmail = await accountDAO.getClientByEmail(
     outputClient?.email,
   );
 

@@ -1,5 +1,5 @@
-import { AccountDAO } from "../resource/AccountDAO";
 import { Client } from "../database/interfaces/Client";
+import { ClientDAO } from "../resource/ClientDAO";
 import { randomUUID } from "crypto";
 import { validateCpf } from "./validateCpf";
 
@@ -7,7 +7,7 @@ export type ErrorOutput = { error: string; code: number };
 type SignupOutput = any | ErrorOutput;
 
 export class Signup {
-  constructor(readonly accountDAO: AccountDAO) {}
+  constructor(readonly accountDAO: ClientDAO) {}
 
   async execute({ cpf, name, email }: any): Promise<SignupOutput> {
     const isValidCpf = validateCpf(cpf);
@@ -31,7 +31,7 @@ export class Signup {
     }
 
     const isEmailAlreadyRegistered =
-      await this.accountDAO.getAccountByEmail(email);
+      await this.accountDAO.getClientByEmail(email);
 
     if (isEmailAlreadyRegistered) {
       throw new Error("Email already registered");
@@ -45,7 +45,7 @@ export class Signup {
       cpf,
     };
 
-    const insertedClient = await this.accountDAO.createAccount(newClient);
+    const insertedClient = await this.accountDAO.createClient(newClient);
     return insertedClient;
   }
 }

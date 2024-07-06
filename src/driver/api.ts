@@ -1,4 +1,4 @@
-import { AccountDAODatabase } from "../resource/AccountDAO";
+import { ClientDAODatabase } from "../resource/ClientDAO";
 import { GetClient } from "../application/GetClient";
 import { Signup } from "../application/Signup";
 import express from "express";
@@ -24,7 +24,7 @@ app.use(express.json());
 
 app.post("/client", async (req, res) => {
   try {
-    const accountDAO = new AccountDAODatabase();
+    const accountDAO = new ClientDAODatabase();
     const signup = new Signup(accountDAO);
     const output = await signup.execute(req.body);
     res.status(201).json(output);
@@ -35,7 +35,7 @@ app.post("/client", async (req, res) => {
 
 app.get("/client/:account_id", async (req, res) => {
   try {
-    const accountDAO = new AccountDAODatabase();
+    const accountDAO = new ClientDAODatabase();
     const getClient = new GetClient(accountDAO);
     const output = await getClient.execute(req.params.account_id);
     res.json(output);
