@@ -4,11 +4,11 @@ export type ErrorOutput = { error: string; code: number };
 
 type GetClientOutput = any | ErrorOutput;
 
-export class GetClient {
+export class GetClientByCpf {
   constructor(readonly clientDAO: ClientDAO) {}
 
-  async execute(client_id: string): Promise<GetClientOutput> {
-    const client = await this.clientDAO.getClientById(client_id);
+  async execute(cpf: string): Promise<GetClientOutput> {
+    const client = await this.clientDAO.getClientByCPF(cpf);
     if (client) {
       return client;
     } else {

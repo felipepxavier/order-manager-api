@@ -1,5 +1,6 @@
 import { ClientDAODatabase } from "../resource/ClientDAO";
 import { GetClient } from "../application/GetClient";
+import { GetClientByCpf } from "../application/GetClientByCpf";
 import { Signup } from "../application/Signup";
 import express from "express";
 
@@ -33,16 +34,27 @@ app.post("/client", async (req, res) => {
   }
 });
 
-app.get("/client/:account_id", async (req, res) => {
+app.get("/client/:client_id", async (req, res) => {
   try {
     const accountDAO = new ClientDAODatabase();
     const getClient = new GetClient(accountDAO);
-    const output = await getClient.execute(req.params.account_id);
+    const output = await getClient.execute(req.params.client_id);
     res.json(output);
   } catch (error: any) {
     res.status(422).json({ message: error.message });
   }
 });
+
+app.get("/client/cpf/:cpf", async (req, res) => {
+  try {
+    const accountDAO = new ClientDAODatabase();
+    const getClient = new GetClientByCpf(accountDAO);
+    const output = await getClient.execute(req.params.cpf);
+    res.json(output);
+  } catch (error: any) {
+    res.status(422).json({ message: error.message });
+  }
+})
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port} `);

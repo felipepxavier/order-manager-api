@@ -5,6 +5,7 @@ import db from "../database/knex";
 export interface ClientDAO {
   getClientByEmail(email: string): Promise<Client | undefined>;
   getClientById(account_id: string): Promise<Client | undefined>;
+  getClientByCPF: (cpf: string) => Promise<Client | undefined>;
   createClient(client: any): Promise<Client>;
 }
 
@@ -13,16 +14,16 @@ export class ClientDAODatabase implements ClientDAO {
   async getClientByEmail(email: string): Promise<Client | undefined> {
     return await db<Client>("client").where({ email }).first();
   }
-
   async getClientById(account_id: string): Promise<Client | undefined> {
     return await db<Client>("client").where({ account_id }).first();
   }
-
+  async getClientByCPF(cpf: string): Promise<Client | undefined> {
+    return await db<Client>("client").where({ cpf }).first();
+  }
   async createClient(client: any): Promise<Client> {
     const [insertedClient] = await db<Client>("client")
       .insert(client)
       .returning("*");
-
     return insertedClient;
   }
 }
@@ -34,11 +35,12 @@ export class ClientDAOMemory implements ClientDAO {
   async getClientByEmail(email: string): Promise<Client | undefined> {
     return this.clients.find((client) => client.email === email);
   }
-
   async getClientById(account_id: string): Promise<Client | undefined> {
     return this.clients.find((client) => client.account_id === account_id);
   }
-
+  async getClientByCPF(cpf: string): Promise<Client | undefined> {
+    return this.clients.find((client) => client.cpf === cpf);
+  }
   async createClient(client: Client): Promise<Client> {
     this.clients.push(client);
     return client;
