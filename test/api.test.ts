@@ -46,9 +46,17 @@ describe("signup", () => {
 });
 
 describe("getClient", () => {
-  it("should return an error if the client not found", async () => {
+  it("should return an error if the client by id not found", async () => {
     const responseClient = await axios.get(
       `http://localhost:3000/client/${randomUUID()}`,
+    );
+    expect(responseClient.status).toBe(422);
+    expect(responseClient.data.message).toBe("Client not found");
+  });
+
+  it("should return an error if the client by cpf not found", async () => {
+    const responseClient = await axios.get(
+      `http://localhost:3000/client/cpf/${randomUUID()}`,
     );
     expect(responseClient.status).toBe(422);
     expect(responseClient.data.message).toBe("Client not found");
