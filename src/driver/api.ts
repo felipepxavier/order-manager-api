@@ -1,10 +1,15 @@
 import { ClientDAODatabase } from "../resource/ClientDAO";
+import { CreateProduct } from "../application/CreateProduct";
 import { GetClientByCpf } from "../application/GetClientByCpf";
 import { GetClientById } from "../application/GetClientById";
-import { Signup } from "../application/Signup";
+import { ProductDAODatabase } from "../resource/ProductDAO";
+import { RegisterClient } from "../application/RegisterClient";
+import { RemoveProduct } from "../application/RemoveProduct";
+import { UpdateProduct } from "../application/UpdateProduct";
 import express from "express";
 
 //import db from './database/knex';
+
 
 const port = 3000;
 const app = express();
@@ -21,12 +26,25 @@ const app = express();
 //   }
 // });
 
+//criacao da tabela de produtos
+// db.schema.hasTable('product').then((exists) => {
+//   if (!exists) {
+//     return db.schema.createTable('product', (table) => {
+//       table.uuid('product_id').primary();
+//       table.string('name').notNullable();
+//       table.string('description').notNullable();
+//       table.float('price').notNullable();
+//       table.string('category').notNullable();
+//     });
+//   }
+// });
+
 app.use(express.json());
 
-app.post("/client", async (req, res) => {
+app.post("/clients", async (req, res) => {
   try {
     const accountDAO = new ClientDAODatabase();
-    const signup = new Signup(accountDAO);
+    const signup = new RegisterClient(accountDAO);
     const output = await signup.execute(req.body);
     res.status(201).json(output);
   } catch (error: any) {
@@ -34,7 +52,7 @@ app.post("/client", async (req, res) => {
   }
 });
 
-app.get("/client/:client_id", async (req, res) => {
+app.get("/clients/:client_id", async (req, res) => {
   try {
     const accountDAO = new ClientDAODatabase();
     const getClient = new GetClientById(accountDAO);
@@ -45,7 +63,7 @@ app.get("/client/:client_id", async (req, res) => {
   }
 });
 
-app.get("/client/cpf/:cpf", async (req, res) => {
+app.get("/clients/cpf/:cpf", async (req, res) => {
   try {
     const accountDAO = new ClientDAODatabase();
     const getClient = new GetClientByCpf(accountDAO);
@@ -55,6 +73,49 @@ app.get("/client/cpf/:cpf", async (req, res) => {
     res.status(422).json({ message: error.message });
   }
 })
+
+app.post("/products", async (req, res) => {
+  try {
+    const productDAO = new ProductDAODatabase();
+    const create = new CreateProduct(productDAO);
+    const output = await create.execute(req.body);
+    res.status(201).json(output);
+  } catch (error: any) {
+    res.status(422).json({ message: error.message });
+  }
+});
+
+app.put("/products/:product_id", async (req, res) => {
+  try {
+    const productDAO = new ProductDAODatabase();
+    const update = new UpdateProduct(productDAO);
+    const output = await update.execute(req.body);
+    res.status(201).json(output);
+  } catch (error: any) {
+    res.status(422).json({ message: error.message });
+  }
+});
+
+app.delete("/products/:product_id", async (req, res) => {
+  try {
+    const productDAO = new ProductDAODatabase();
+    const remove = new RemoveProduct(productDAO);
+    const output = await remove.execute(req.params.product_id);
+    res.status(201).json(output);
+  } catch (error: any) {
+    res.status(422).json({ message: error.message });
+  }
+});
+
+app.get("/products/:category", async (req, res) => {
+  try {
+    const productDAO = new ProductDAODatabase();
+    const products = await productDAO.getALLProductsByCategory(req.params.category);
+    res.json(products);
+  } catch (error: any) {
+    res.status(422).json({ message: error.message });
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port} `);
