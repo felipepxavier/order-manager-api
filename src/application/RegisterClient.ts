@@ -6,7 +6,7 @@ import { validateCpf } from "./validateCpf";
 export type ErrorOutput = { error: string; code: number };
 type SignupOutput = any | ErrorOutput;
 
-export class Signup {
+export class RegisterClient {
   constructor(readonly accountDAO: ClientDAO) {}
 
   async execute({ cpf, name, email }: any): Promise<SignupOutput> {
