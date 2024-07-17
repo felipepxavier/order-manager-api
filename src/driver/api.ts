@@ -2,7 +2,7 @@ import { ClientRepositoryDatabase } from "../infra/repository/ClientRepository";
 import { CreateProduct } from "../application/usecase/CreateProduct";
 import { GetClientByCpf } from "../application/usecase/GetClientByCpf";
 import { GetClientById } from "../application/usecase/GetClientById";
-import { ProductDAODatabase } from "../resource/ProductDAO";
+import { ProductRepositoryDatabase } from "../infra/repository/ProductRepository";
 import { RegisterClient } from "../application/usecase/RegisterClient";
 import { RemoveProduct } from "../application/usecase/RemoveProduct";
 import { UpdateProduct } from "../application/usecase/UpdateProduct";
@@ -76,7 +76,7 @@ app.get("/clients/cpf/:cpf", async (req, res) => {
 
 app.post("/products", async (req, res) => {
   try {
-    const productDAO = new ProductDAODatabase();
+    const productDAO = new ProductRepositoryDatabase();
     const create = new CreateProduct(productDAO);
     const output = await create.execute(req.body);
     res.status(201).json(output);
@@ -87,7 +87,7 @@ app.post("/products", async (req, res) => {
 
 app.put("/products/:product_id", async (req, res) => {
   try {
-    const productDAO = new ProductDAODatabase();
+    const productDAO = new ProductRepositoryDatabase();
     const update = new UpdateProduct(productDAO);
     const output = await update.execute(req.body);
     res.status(201).json(output);
@@ -98,7 +98,7 @@ app.put("/products/:product_id", async (req, res) => {
 
 app.delete("/products/:product_id", async (req, res) => {
   try {
-    const productDAO = new ProductDAODatabase();
+    const productDAO = new ProductRepositoryDatabase();
     const remove = new RemoveProduct(productDAO);
     const output = await remove.execute(req.params.product_id);
     res.status(201).json(output);
@@ -109,7 +109,7 @@ app.delete("/products/:product_id", async (req, res) => {
 
 app.get("/products/:category", async (req, res) => {
   try {
-    const productDAO = new ProductDAODatabase();
+    const productDAO = new ProductRepositoryDatabase();
     const products = await productDAO.getALLProductsByCategory(req.params.category);
     res.json(products);
   } catch (error: any) {

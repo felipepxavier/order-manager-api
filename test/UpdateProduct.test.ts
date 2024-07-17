@@ -1,19 +1,20 @@
 import { CreateProduct } from "../src/application/usecase/CreateProduct";
-import { ProductDAOMemory } from "../src/resource/ProductDAO";
+import { ProductRepositoryMemory } from "../src/infra/repository/ProductRepository";
 import { UpdateProduct } from "../src/application/usecase/UpdateProduct";
 
 describe('UpdateProduct.test', () => {
     it('should update a product correctly', async () => {
-        const productDAO = new ProductDAOMemory();
-        const createProduct = new CreateProduct(productDAO);
-        const updateProduct = new UpdateProduct(productDAO);
+        const productRepository = new ProductRepositoryMemory();
+        const createProduct = new CreateProduct(productRepository);
+        const updateProduct = new UpdateProduct(productRepository);
         const product = {
             name: 'Product 1',
             description: 'Description 1',
             price: 100,
             category: 'drink',
         };
-        const createdProduct = await createProduct.execute(product);
+        const createdProduct = await createProduct.execute(product); 
+
         const updatedProduct = {
             product_id: createdProduct.product_id,
             name: 'Product 2',
@@ -21,7 +22,8 @@ describe('UpdateProduct.test', () => {
             price: 200,
             category: 'dessert',
         };
-        const updatedProductResult = await updateProduct.execute(updatedProduct);
+        const updatedProductResult = await updateProduct.execute(updatedProduct); 
+        
         expect(updatedProductResult).toHaveProperty('product_id', createdProduct.product_id);
         expect(updatedProductResult).toHaveProperty('name', updatedProduct.name);
         expect(updatedProductResult).toHaveProperty('description', updatedProduct.description);

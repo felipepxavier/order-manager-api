@@ -1,9 +1,10 @@
 import { CreateProduct } from "../src/application/usecase/CreateProduct";
-import { ProductDAOMemory } from "../src/resource/ProductDAO";
+import Product from "../src/domain/Product";
+import { ProductRepositoryMemory } from "../src/infra/repository/ProductRepository";
 
 describe('CreateProduct.test', () => {
     it('should create a product correctly', async () => {
-        const productDAO = new ProductDAOMemory();
+        const productDAO = new ProductRepositoryMemory();
         const createProduct = new CreateProduct(productDAO);
         const product = {
             name: 'Product 1',
@@ -17,6 +18,6 @@ describe('CreateProduct.test', () => {
         expect(createdProduct).toHaveProperty('name', 'Product 1');
         expect(createdProduct).toHaveProperty('description', 'Description 1');
         expect(createdProduct).toHaveProperty('price', 100);
-        expect(createdProduct).toHaveProperty('category', 'Category 1');
+        expect(createdProduct).toHaveProperty('category', 'drink');
     });
 })

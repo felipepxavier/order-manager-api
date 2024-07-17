@@ -1,8 +1,8 @@
-import { Product } from "../../database/interfaces/Product";
-import { ProductDAO } from "../../resource/ProductDAO";
+import Product from "../../domain/Product";
+import { ProductRepository } from "../../infra/repository/ProductRepository";
 
 export class UpdateProduct {
-  constructor(readonly productDAO: ProductDAO) {}
+  constructor(readonly productRepository: ProductRepository) {}
 
   async execute({ product_id, name, description, price, category }: any): Promise<Product> {
     const updatedProduct: Product = {
@@ -13,7 +13,7 @@ export class UpdateProduct {
       category,
     };
 
-    const updatedProductResult = await this.productDAO.updateProduct(updatedProduct);
+    const updatedProductResult = await this.productRepository.updateProduct(updatedProduct);
     return updatedProductResult;
   }
 }

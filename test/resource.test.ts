@@ -3,10 +3,10 @@ import { ClientRepositoryDatabase } from "../src/infra/repository/ClientReposito
 
 it("should create a record in the customer table and query by id", async () => {
   const client = Client.create("John Test", `john.doe${Math.random()}@gmail.com`, "87748248800");
-  const accountDAO = new ClientRepositoryDatabase();
-  const outputClient = await accountDAO.createClient(client);
+  const clientRepository = new ClientRepositoryDatabase();
+  const outputClient = await clientRepository.createClient(client);
 
-  const savedAccountById = await accountDAO.getClientById(
+  const savedAccountById = await clientRepository.getClientById(
     outputClient?.account_id,
   );
 

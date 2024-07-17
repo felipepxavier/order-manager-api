@@ -1,8 +1,8 @@
-import Product from "../domain/Product";
-import db from "../database/knex";
+import Product from "../../domain/Product";
+import db from "../../database/knex";
 
 // [Driven/Resource] Port
-export interface ProductDAO {
+export interface ProductRepository {
   getALLProductsByCategory(category: string): Promise<Product[] | undefined>;
   createProduct(product: Product): Promise<Product>;
   updateProduct(product: Product): Promise<Product>;
@@ -11,7 +11,7 @@ export interface ProductDAO {
 }
 
 // [Driven/Resource] Adapter
-export class ProductDAODatabase implements ProductDAO {
+export class ProductRepositoryDatabase implements ProductRepository {
     async getALLProductsByCategory(category: string): Promise<Product[] | undefined> {
         return await db<Product>("product").where({ category }).select("*");
     }
@@ -34,35 +34,36 @@ export class ProductDAODatabase implements ProductDAO {
 }
 
 // [Driven/Resource] Adapter
-export class ProductDAOMemory implements ProductDAO {
+export class ProductRepositoryMemory implements ProductRepository {
 
     private products: Product[] = [];
 
   async getALLProductsByCategory(category: string): Promise<Product[] | undefined> {
-    return this.products.filter((product) => product.category === category);
+    return this.products.filter((product) => product.category === category).map((product) => Product.restore(product.product_id, product.name, product.description, product.price, product.category));
   }
   async createProduct(product: Product): Promise<Product> {
     this.products.push(product);
-    return product;
+    return Product.restore(product.product_id, product.name, product.description, product.price, product.category);
      
   }
   async updateProduct(product: Product): Promise<Product> {
     const newProducts = this.products.map((p) => {
         if (p.product_id === product.product_id) {
-            return product;
+            return Product.restore(product.product_id, product.name, product.description, product.price, product.category);
         }
-        return p;
+        return Product.restore(p.product_id, p.name, p.description, p.price, p.category);
     })
     this.products = newProducts;
-    return product;
+    return Product.restore(product.product_id, product.name, product.description, product.price, product.category);
   }
   
   async removeProduct(product_id: string): Promise<Product | undefined> {
     const removedProduct = this.products.find((product) => product.product_id === product_id);
-    this.products = this.products.filter((product) => product.product_id !== product_id);
-    return removedProduct;
+    this.products = this.products.filter((product) => product.product_id !== product_id).map((product) => Product.restore(product.product_id, product.name, product.description, product.price, product.category));
+    if(!removedProduct) return undefined;
+    return Product.restore(removedProduct.product_id, removedProduct.name, removedProduct.description, removedProduct.price, removedProduct.category);
   }
   async getALLProducts(): Promise<Product[]> {
-    return this.products;
+    return this.products.map((product) => Product.restore(product.product_id, product.name, product.description, product.price, product.category));
   }
 }

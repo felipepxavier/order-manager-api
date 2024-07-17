@@ -1,11 +1,11 @@
 import Product from "../../domain/Product";
-import { ProductDAO } from "../../resource/ProductDAO";
+import { ProductRepository } from "../../infra/repository/ProductRepository";
 
 export class GetAllProductsByCategory {
-  constructor(readonly productDAO: ProductDAO) {}
+  constructor(readonly productRepository: ProductRepository) {}
 
   async execute(category: string): Promise<Product[] | undefined> {
-    const products = await this.productDAO.getALLProductsByCategory(category);
+    const products = await this.productRepository.getALLProductsByCategory(category);
     return products;
   }
 }

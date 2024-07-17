@@ -1,9 +1,9 @@
-import { ProductDAO } from "../../resource/ProductDAO";
+import { ProductRepository } from "../../infra/repository/ProductRepository";
 
 export class RemoveProduct {
-    constructor(readonly productDAO: ProductDAO) {}
+    constructor(readonly productRepository: ProductRepository) {}
     async execute(product_id: string) {
-        const removedProduct = await this.productDAO.removeProduct(product_id);
+        const removedProduct = await this.productRepository.removeProduct(product_id);
         return removedProduct;
     }
 }
