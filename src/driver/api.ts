@@ -1,11 +1,11 @@
-import { ClientDAODatabase } from "../resource/ClientDAO";
-import { CreateProduct } from "../application/CreateProduct";
-import { GetClientByCpf } from "../application/GetClientByCpf";
-import { GetClientById } from "../application/GetClientById";
+import { ClientRepositoryDatabase } from "../infra/repository/ClientRepository";
+import { CreateProduct } from "../application/usecase/CreateProduct";
+import { GetClientByCpf } from "../application/usecase/GetClientByCpf";
+import { GetClientById } from "../application/usecase/GetClientById";
 import { ProductDAODatabase } from "../resource/ProductDAO";
-import { RegisterClient } from "../application/RegisterClient";
-import { RemoveProduct } from "../application/RemoveProduct";
-import { UpdateProduct } from "../application/UpdateProduct";
+import { RegisterClient } from "../application/usecase/RegisterClient";
+import { RemoveProduct } from "../application/usecase/RemoveProduct";
+import { UpdateProduct } from "../application/usecase/UpdateProduct";
 import express from "express";
 
 //import db from './database/knex';
@@ -43,7 +43,7 @@ app.use(express.json());
 
 app.post("/clients", async (req, res) => {
   try {
-    const accountDAO = new ClientDAODatabase();
+    const accountDAO = new ClientRepositoryDatabase();
     const signup = new RegisterClient(accountDAO);
     const output = await signup.execute(req.body);
     res.status(201).json(output);
@@ -54,7 +54,7 @@ app.post("/clients", async (req, res) => {
 
 app.get("/clients/:client_id", async (req, res) => {
   try {
-    const accountDAO = new ClientDAODatabase();
+    const accountDAO = new ClientRepositoryDatabase();
     const getClient = new GetClientById(accountDAO);
     const output = await getClient.execute(req.params.client_id);
     res.json(output);
@@ -65,7 +65,7 @@ app.get("/clients/:client_id", async (req, res) => {
 
 app.get("/clients/cpf/:cpf", async (req, res) => {
   try {
-    const accountDAO = new ClientDAODatabase();
+    const accountDAO = new ClientRepositoryDatabase();
     const getClient = new GetClientByCpf(accountDAO);
     const output = await getClient.execute(req.params.cpf);
     res.json(output);

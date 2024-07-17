@@ -1,5 +1,5 @@
-import { Product } from "../database/interfaces/Product";
-import { ProductDAO } from "../resource/ProductDAO";
+import { Product } from "../../database/interfaces/Product";
+import { ProductDAO } from "../../resource/ProductDAO";
 
 export class UpdateProduct {
   constructor(readonly productDAO: ProductDAO) {}

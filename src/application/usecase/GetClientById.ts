@@ -1,11 +1,11 @@
-import { ClientDAO } from "../resource/ClientDAO";
+import { ClientRepository } from "../../infra/repository/ClientRepository";
 
 export type ErrorOutput = { error: string; code: number };
 
 type GetClientOutput = any | ErrorOutput;
 
 export class GetClientById {
-  constructor(readonly clientDAO: ClientDAO) {}
+  constructor(readonly clientDAO: ClientRepository) {}
 
   async execute(client_id: string): Promise<GetClientOutput> {
     const client = await this.clientDAO.getClientById(client_id);

@@ -1,5 +1,5 @@
-import { Product } from "../database/interfaces/Product";
-import { ProductDAO } from "../resource/ProductDAO";
+import Product from "../../domain/Product";
+import { ProductDAO } from "../../resource/ProductDAO";
 
 export class GetAllProductsByCategory {
   constructor(readonly productDAO: ProductDAO) {}

@@ -1,11 +1,11 @@
-import { Product } from "../database/interfaces/Product";
+import Product from "../domain/Product";
 import db from "../database/knex";
 
 // [Driven/Resource] Port
 export interface ProductDAO {
   getALLProductsByCategory(category: string): Promise<Product[] | undefined>;
-  createProduct(product: any): Promise<Product>;
-  updateProduct(product: any): Promise<Product>;
+  createProduct(product: Product): Promise<Product>;
+  updateProduct(product: Product): Promise<Product>;
   removeProduct(product_id: string): Promise<Product | undefined>;
   getALLProducts(): Promise<Product[]>;
 }
@@ -15,20 +15,21 @@ export class ProductDAODatabase implements ProductDAO {
     async getALLProductsByCategory(category: string): Promise<Product[] | undefined> {
         return await db<Product>("product").where({ category }).select("*");
     }
-    async createProduct(product: any): Promise<Product> {
+    async createProduct(product: Product): Promise<Product> {
         const [insertedProduct] = await db<Product>("product").insert(product).returning("*");
-        return insertedProduct
+        return Product.restore(insertedProduct.product_id, insertedProduct.name, insertedProduct.description, insertedProduct.price, insertedProduct.category);
     }
-    async updateProduct(product: any): Promise<Product> {
+    async updateProduct(product: Product): Promise<Product> {
         const [updatedProduct] = await db<Product>("product").where({ product_id: product.product_id }).update(product).returning("*");
-        return updatedProduct
+        return Product.restore(updatedProduct.product_id, updatedProduct.name, updatedProduct.description, updatedProduct.price, updatedProduct.category);
     }
-    async removeProduct(product_id: any): Promise<Product> {
+    async removeProduct(product_id: string): Promise<Product> {
         const [removedProduct] = await db<Product>("product").where({ product_id }).delete().returning("*");
-        return removedProduct
+        return Product.restore(removedProduct.product_id, removedProduct.name, removedProduct.description, removedProduct.price, removedProduct.category);
     }
     async getALLProducts(): Promise<Product[]> {
-        return await db<Product>("product").select("*");
+        const products = await db<Product>("product").select("*");
+        return products?.map((product) => Product.restore(product.product_id, product.name, product.description, product.price, product.category));
     }
 }
 
@@ -40,12 +41,12 @@ export class ProductDAOMemory implements ProductDAO {
   async getALLProductsByCategory(category: string): Promise<Product[] | undefined> {
     return this.products.filter((product) => product.category === category);
   }
-  async createProduct(product: any): Promise<Product> {
+  async createProduct(product: Product): Promise<Product> {
     this.products.push(product);
     return product;
      
   }
-  async updateProduct(product: any): Promise<Product> {
+  async updateProduct(product: Product): Promise<Product> {
     const newProducts = this.products.map((p) => {
         if (p.product_id === product.product_id) {
             return product;

@@ -1,4 +1,4 @@
-import { ProductDAO } from "../resource/ProductDAO";
+import { ProductDAO } from "../../resource/ProductDAO";
 
 export class RemoveProduct {
     constructor(readonly productDAO: ProductDAO) {}
