@@ -1,5 +1,5 @@
 import Product from "../../domain/Product";
-import db from "../../database/knex";
+import db from "../database/knex";
 
 // [Driven/Resource] Port
 export interface ProductRepository {

@@ -1,11 +1,11 @@
-import { ClientRepositoryDatabase } from "../infra/repository/ClientRepository";
-import { CreateProduct } from "../application/usecase/CreateProduct";
-import { GetClientByCpf } from "../application/usecase/GetClientByCpf";
-import { GetClientById } from "../application/usecase/GetClientById";
-import { ProductRepositoryDatabase } from "../infra/repository/ProductRepository";
-import { RegisterClient } from "../application/usecase/RegisterClient";
-import { RemoveProduct } from "../application/usecase/RemoveProduct";
-import { UpdateProduct } from "../application/usecase/UpdateProduct";
+import { ClientRepositoryDatabase } from "./src/infra/repository/ClientRepository";
+import { CreateProduct } from "./src/application/usecase/CreateProduct";
+import { GetClientByCpf } from "./src/application/usecase/GetClientByCpf";
+import { GetClientById } from "./src/application/usecase/GetClientById";
+import { ProductRepositoryDatabase } from "./src/infra/repository/ProductRepository";
+import { RegisterClient } from "./src/application/usecase/RegisterClient";
+import { RemoveProduct } from "./src/application/usecase/RemoveProduct";
+import { UpdateProduct } from "./src/application/usecase/UpdateProduct";
 import express from "express";
 
 //import db from './database/knex';

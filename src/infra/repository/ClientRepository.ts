@@ -1,5 +1,5 @@
 import Client from "../../domain/Client";
-import db from "../../database/knex";
+import db from "../database/knex";
 
 // [Driven/Resource] Port
 export interface ClientRepository {
