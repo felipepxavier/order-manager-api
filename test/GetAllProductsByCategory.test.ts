@@ -1,5 +1,5 @@
-import { CreateProduct } from "../src/application/CreateProduct";
-import { GetAllProductsByCategory } from "../src/application/GetAllProductsByCategory";
+import { CreateProduct } from "../src/application/usecase/CreateProduct";
+import { GetAllProductsByCategory } from "../src/application/usecase/GetAllProductsByCategory";
 import { ProductDAOMemory } from "../src/resource/ProductDAO";
 
 describe('GetAllProductsByCategory.test', () => {

@@ -1,4 +1,4 @@
-import { CreateProduct } from "../src/application/CreateProduct";
+import { CreateProduct } from "../src/application/usecase/CreateProduct";
 import { ProductDAOMemory } from "../src/resource/ProductDAO";
 
 describe('CreateProduct.test', () => {

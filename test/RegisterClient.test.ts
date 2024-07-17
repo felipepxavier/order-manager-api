@@ -1,17 +1,17 @@
-import { ClientDAOMemory } from "../src/resource/ClientDAO";
-import { GetClientByCpf } from "../src/application/GetClientByCpf";
-import { GetClientById } from "../src/application/GetClientById";
-import { RegisterClient } from "../src/application/RegisterClient";
+import { ClientRepositoryMemory } from "../src/infra/repository/ClientRepository";
+import { GetClientByCpf } from "../src/application/usecase/GetClientByCpf";
+import { GetClientById } from "../src/application/usecase/GetClientById";
+import { RegisterClient } from "../src/application/usecase/RegisterClient";
 
-let signup: RegisterClient;
+let registerClient: RegisterClient;
 let getClientById: GetClientById;
 let getClientByCpf: GetClientByCpf;
 
 beforeEach(async () => {
-  const clientDAO = new ClientDAOMemory();
-  signup = new RegisterClient(clientDAO);
-  getClientById = new GetClientById(clientDAO);
-  getClientByCpf = new GetClientByCpf(clientDAO);
+  const clientRepository = new ClientRepositoryMemory();  
+  registerClient = new RegisterClient(clientRepository);
+  getClientById = new GetClientById(clientRepository);
+  getClientByCpf = new GetClientByCpf(clientRepository);
 });
 
 it("should create a client correctly", async () => {
@@ -20,7 +20,7 @@ it("should create a client correctly", async () => {
     email: `john.doe${Math.random()}@gmail.com`,
     cpf: "87748248800",
   };
-  const outputClient = await signup.execute(input);
+  const outputClient = await registerClient.execute(input);
   expect(outputClient.account_id).toBeDefined();
 
   const outputGetClient = await getClientById.execute(outputClient.account_id);
@@ -36,7 +36,7 @@ it("should return an error if the cpf is not valid", async () => {
     email: `john.doe${Math.random()}@gmail.com`,
     cpf: "6666",
   };
-  await expect(() => signup.execute(input)).rejects.toThrow("Invalid CPF");
+  await expect(() => registerClient.execute(input)).rejects.toThrow("Invalid CPF");
 });
 
 it("should return an error if the name is not valid", async () => {
@@ -45,7 +45,7 @@ it("should return an error if the name is not valid", async () => {
     email: `john.doe${Math.random()}@gmail.com`,
     cpf: "87748248800",
   };
-  await expect(() => signup.execute(input)).rejects.toThrow("Invalid Name");
+  await expect(() => registerClient.execute(input)).rejects.toThrow("Invalid Name");
 });
 
 it("should return an error if the email is not valid", async () => {
@@ -54,7 +54,7 @@ it("should return an error if the email is not valid", async () => {
     email: `john.doe${Math.random()}gmail.com`,
     cpf: "87748248800",
   };
-  await expect(() => signup.execute(input)).rejects.toThrow("Invalid Email");
+  await expect(() => registerClient.execute(input)).rejects.toThrow("Invalid Email");
 });
 
 it("should return an error if the email is already registered", async () => {
@@ -63,8 +63,8 @@ it("should return an error if the email is already registered", async () => {
     email: `john.doe${Math.random()}@gmail.com`,
     cpf: "87748248800",
   };
-  await signup.execute(input)
-  await expect(() => signup.execute(input)).rejects.toThrow("Email already registered");
+  await registerClient.execute(input)
+  await expect(() => registerClient.execute(input)).rejects.toThrow("Email already registered");
 });
 
 it("should return client by cpf correctly", async () => {
@@ -73,7 +73,7 @@ it("should return client by cpf correctly", async () => {
     email: `john.doe${Math.random()}@gmail.com`,
     cpf: "87748248800",
   };
-  await signup.execute(input);
+  await registerClient.execute(input);
   const outputGetClient = await getClientByCpf.execute(input.cpf);
 
   expect(outputGetClient.name).toBe(input.name);

@@ -1,6 +1,6 @@
-import { CreateProduct } from "../src/application/CreateProduct";
+import { CreateProduct } from "../src/application/usecase/CreateProduct";
 import { ProductDAOMemory } from "../src/resource/ProductDAO";
-import { RemoveProduct } from "../src/application/RemoveProduct";
+import { RemoveProduct } from "../src/application/usecase/RemoveProduct";
 
 describe('RemoveProduct.test', () => {
     it('should remove a product correctly', async () => {
@@ -21,5 +21,18 @@ describe('RemoveProduct.test', () => {
         expect(removedProduct).toEqual(expect.objectContaining(product));
         expect(productDAO.removeProduct).toHaveBeenCalledTimes(1);
         expect(productDAO.removeProduct).toHaveBeenCalledWith(createdProduct.product_id);
+    })
+
+    it('should throw an error when the product is not found', async () => {
+        const productDAO = new ProductDAOMemory();
+        jest.spyOn(productDAO, 'removeProduct').mockResolvedValue(undefined)
+        const removeProduct = new RemoveProduct(productDAO);
+        const product_id = '123';
+        try {
+            await removeProduct.execute(product_id);
+        } catch (error) {
+            expect(error).toBeInstanceOf(Error);
+            expect(error).toHaveProperty('message', 'Product not found');
+        }
     })
 })

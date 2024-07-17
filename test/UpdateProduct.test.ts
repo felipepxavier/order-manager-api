@@ -1,6 +1,6 @@
-import { CreateProduct } from "../src/application/CreateProduct";
+import { CreateProduct } from "../src/application/usecase/CreateProduct";
 import { ProductDAOMemory } from "../src/resource/ProductDAO";
-import { UpdateProduct } from "../src/application/UpdateProduct";
+import { UpdateProduct } from "../src/application/usecase/UpdateProduct";
 
 describe('UpdateProduct.test', () => {
     it('should update a product correctly', async () => {
