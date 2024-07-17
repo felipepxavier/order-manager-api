@@ -10,7 +10,7 @@ describe('CreateProduct.test', () => {
             name: 'Product 1',
             description: 'Description 1',
             price: 100,
-            category: 'Category 1',
+            category: 'drink',
         };
         const createdProduct = await createProduct.execute(product);
     
