@@ -1,9 +1,11 @@
 import Client from "../src/domain/Client";
 import { ClientRepositoryDatabase } from "../src/infra/repository/ClientRepository";
+import { KnexAdapter } from "../src/infra/database/QueryBuilderDatabaseConnection";
 
 it("should create a record in the customer table and query by id", async () => {
   const client = Client.create("John Test", `john.doe${Math.random()}@gmail.com`, "87748248800");
-  const clientRepository = new ClientRepositoryDatabase();
+  const connection = new KnexAdapter();
+  const clientRepository = new ClientRepositoryDatabase(connection);
   const outputClient = await clientRepository.createClient(client);
 
   const savedAccountById = await clientRepository.getClientById(
@@ -14,11 +16,13 @@ it("should create a record in the customer table and query by id", async () => {
   expect(savedAccountById?.name).toBe(client.name);
   expect(savedAccountById?.email).toBe(client.email);
   expect(savedAccountById?.cpf).toBe(client.cpf);
+  await connection.close();
 });
 
 it("should create a record in the customer table and consult by email", async () => {
   const client = Client.create("John Test", `john.doe${Math.random()}@gmail.com`, "87748248800");
-  const accountDAO = new ClientRepositoryDatabase();
+  const connection = new KnexAdapter();
+  const accountDAO = new ClientRepositoryDatabase(connection);
   const outputClient = await accountDAO.createClient(client);
   const savedAccountByEmail = await accountDAO.getClientByEmail(
     outputClient?.email,
@@ -28,4 +32,5 @@ it("should create a record in the customer table and consult by email", async ()
   expect(savedAccountByEmail?.name).toBe(client.name);
   expect(savedAccountByEmail?.email).toBe(client.email);
   expect(savedAccountByEmail?.cpf).toBe(client.cpf);
+  await connection.close();
 });

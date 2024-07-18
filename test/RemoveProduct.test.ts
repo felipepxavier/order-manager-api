@@ -1,5 +1,4 @@
 import { CreateProduct } from "../src/application/usecase/CreateProduct";
-import Product from "../src/domain/Product";
 import { ProductRepositoryMemory } from "../src/infra/repository/ProductRepository";
 import { RemoveProduct } from "../src/application/usecase/RemoveProduct";
 

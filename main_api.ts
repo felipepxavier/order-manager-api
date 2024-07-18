@@ -2,6 +2,7 @@ import { ClientRepositoryDatabase } from "./src/infra/repository/ClientRepositor
 import { CreateProduct } from "./src/application/usecase/CreateProduct";
 import { GetClientByCpf } from "./src/application/usecase/GetClientByCpf";
 import { GetClientById } from "./src/application/usecase/GetClientById";
+import { KnexAdapter } from "./src/infra/database/QueryBuilderDatabaseConnection";
 import { ProductRepositoryDatabase } from "./src/infra/repository/ProductRepository";
 import { RegisterClient } from "./src/application/usecase/RegisterClient";
 import { RemoveProduct } from "./src/application/usecase/RemoveProduct";
@@ -40,11 +41,12 @@ const app = express();
 // });
 
 app.use(express.json());
+const connection = new KnexAdapter();
 
 app.post("/clients", async (req, res) => {
   try {
-    const accountDAO = new ClientRepositoryDatabase();
-    const signup = new RegisterClient(accountDAO);
+    const clientRepository = new ClientRepositoryDatabase(connection);
+    const signup = new RegisterClient(clientRepository);
     const output = await signup.execute(req.body);
     res.status(201).json(output);
   } catch (error: any) {
@@ -54,8 +56,8 @@ app.post("/clients", async (req, res) => {
 
 app.get("/clients/:client_id", async (req, res) => {
   try {
-    const accountDAO = new ClientRepositoryDatabase();
-    const getClient = new GetClientById(accountDAO);
+    const clientRepository = new ClientRepositoryDatabase(connection);
+    const getClient = new GetClientById(clientRepository);
     const output = await getClient.execute(req.params.client_id);
     res.json(output);
   } catch (error: any) {
@@ -65,8 +67,8 @@ app.get("/clients/:client_id", async (req, res) => {
 
 app.get("/clients/cpf/:cpf", async (req, res) => {
   try {
-    const accountDAO = new ClientRepositoryDatabase();
-    const getClient = new GetClientByCpf(accountDAO);
+    const clientRepository = new ClientRepositoryDatabase(connection);
+    const getClient = new GetClientByCpf(clientRepository);
     const output = await getClient.execute(req.params.cpf);
     res.json(output);
   } catch (error: any) {
@@ -76,8 +78,8 @@ app.get("/clients/cpf/:cpf", async (req, res) => {
 
 app.post("/products", async (req, res) => {
   try {
-    const productDAO = new ProductRepositoryDatabase();
-    const create = new CreateProduct(productDAO);
+    const productRepository = new ProductRepositoryDatabase(connection);
+    const create = new CreateProduct(productRepository);
     const output = await create.execute(req.body);
     res.status(201).json(output);
   } catch (error: any) {
@@ -87,8 +89,8 @@ app.post("/products", async (req, res) => {
 
 app.put("/products/:product_id", async (req, res) => {
   try {
-    const productDAO = new ProductRepositoryDatabase();
-    const update = new UpdateProduct(productDAO);
+    const productRepository = new ProductRepositoryDatabase(connection);
+    const update = new UpdateProduct(productRepository);
     const output = await update.execute(req.body);
     res.status(201).json(output);
   } catch (error: any) {
@@ -98,8 +100,8 @@ app.put("/products/:product_id", async (req, res) => {
 
 app.delete("/products/:product_id", async (req, res) => {
   try {
-    const productDAO = new ProductRepositoryDatabase();
-    const remove = new RemoveProduct(productDAO);
+    const productRepository = new ProductRepositoryDatabase(connection);
+    const remove = new RemoveProduct(productRepository);
     const output = await remove.execute(req.params.product_id);
     res.status(201).json(output);
   } catch (error: any) {
@@ -109,8 +111,8 @@ app.delete("/products/:product_id", async (req, res) => {
 
 app.get("/products/:category", async (req, res) => {
   try {
-    const productDAO = new ProductRepositoryDatabase();
-    const products = await productDAO.getALLProductsByCategory(req.params.category);
+    const productRepository = new ProductRepositoryDatabase(connection);
+    const products = await productRepository.getALLProductsByCategory(req.params.category);
     res.json(products);
   } catch (error: any) {
     res.status(422).json({ message: error.message });

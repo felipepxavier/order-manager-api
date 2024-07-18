@@ -1,7 +1,7 @@
 import type { Knex } from "knex";
 
 export const config: { [key: string]: Knex.Config } = {
-  development: {
+  development: {  
     client: "pg",
     connection: {
       host: "127.0.0.1",

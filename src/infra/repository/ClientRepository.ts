@@ -1,5 +1,6 @@
 import Client from "../../domain/Client";
-import db from "../database/knex";
+import DatabaseConnection from "../database/QueryBuilderDatabaseConnection";
+import { Knex } from "knex";
 
 // [Driven/Resource] Port
 export interface ClientRepository {
@@ -11,22 +12,27 @@ export interface ClientRepository {
 
 // [Driven/Resource] Adapter
 export class ClientRepositoryDatabase implements ClientRepository {
+  private db: Knex;
+  constructor(readonly databaseConnection: DatabaseConnection<Knex>) {
+     this.db = this.databaseConnection.builder();
+  }
+  
   async getClientByEmail(email: string): Promise<Client | undefined> {
-    const client = await db<Client>("client").where({ email }).first();
+    const client = await this.db<Client>("client").where({ email }).first();
     if (!client) {
       return undefined;
     }
     return Client.restore(client.account_id, client.name, client.email, client.cpf);
   }
   async getClientById(account_id: string): Promise<Client | undefined> {
-    const client = await db<Client>("client").where({ account_id }).first();
+    const client = await this.db<Client>("client").where({ account_id }).first();
     if (!client) {
       return undefined;
     }
     return Client.restore(client.account_id, client.name, client.email, client.cpf);
   }
   async getClientByCPF(cpf: string): Promise<Client | undefined> {
-    const client = await db<Client>("client").where({ cpf }).first();
+    const client = await this.db<Client>("client").where({ cpf }).first();
 
     if (!client) {
       return undefined;
@@ -34,7 +40,7 @@ export class ClientRepositoryDatabase implements ClientRepository {
     return Client.restore(client.account_id, client.name, client.email, client.cpf);
   }
   async createClient(client: any): Promise<Client> {
-    const [insertedClient] = await db<Client>("client")
+    const [insertedClient] = await this.db<Client>("client")
       .insert(client)
       .returning("*");
     return Client.restore(insertedClient.account_id, insertedClient.name, insertedClient.email, insertedClient.cpf);

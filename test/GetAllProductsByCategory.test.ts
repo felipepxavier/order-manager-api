@@ -1,6 +1,5 @@
 import { CreateProduct } from "../src/application/usecase/CreateProduct";
 import { GetAllProductsByCategory } from "../src/application/usecase/GetAllProductsByCategory";
-import Product from "../src/domain/Product";
 import { ProductRepositoryMemory } from "../src/infra/repository/ProductRepository";
 
 describe('GetAllProductsByCategory.test', () => {
