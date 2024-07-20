@@ -10,8 +10,7 @@ export default class Name {
           }
         this.value = name
     }
-
-    getName() {
+    getValue() {
         return this.value
     }
 }

@@ -9,8 +9,7 @@ export default class Email {
           }
         this.value = email
     }
-
-    getEmail() {
+    getValue() {
         return this.value
     }
 }
