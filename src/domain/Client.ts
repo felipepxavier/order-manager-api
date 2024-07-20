@@ -1,3 +1,4 @@
+import Email from "./Email";
 import Name from "./Name";
 import { randomUUID } from "crypto";
 import { validateCpf } from "./validateCpf";
@@ -7,19 +8,12 @@ export default class Client {
   private constructor(
     readonly account_id: string,
     readonly name: Name,
-    readonly email: string,
+    readonly email: Email,
     readonly cpf: string,
   ) {
     const isValidCpf = validateCpf(this.cpf);
-    const isEmailValid = !!this.email.match(
-      /^[a-z0-9.]+@[a-z0-9]+\.[a-z]+(\.[a-z]+)?$/i,
-    );
     if (!isValidCpf) {
       throw new Error("Invalid CPF");
-    }
-    
-    if (!isEmailValid) {
-      throw new Error("Invalid Email");
     }
   }
 
@@ -29,7 +23,7 @@ export default class Client {
          email: string,
          cpf: string) {
         const account_id = randomUUID()
-        return new Client(account_id, new Name(name), email, cpf);
+        return new Client(account_id, new Name(name), new Email(email), cpf);
     }
 
     //static factory method
@@ -39,6 +33,6 @@ export default class Client {
         email: string,
         cpf: string
         ) {
-        return new Client(account_id, new Name(name), email, cpf);
+        return new Client(account_id, new Name(name), new Email(email), cpf);
     }
 }
