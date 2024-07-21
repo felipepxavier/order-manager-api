@@ -1,18 +1,30 @@
+import Client from "../../domain/Client";
 import { ClientRepository } from "../../infra/repository/ClientRepository";
 
 export type ErrorOutput = { error: string; code: number };
 
-type GetClientOutput = any | ErrorOutput;
-
 export class GetClientById {
-  constructor(readonly clientDAO: ClientRepository) {}
+  constructor(readonly clientRepository: ClientRepository) {}
 
-  async execute(client_id: string): Promise<GetClientOutput> {
-    const client = await this.clientDAO.getClientById(client_id);
+  async execute(client_id: string): Promise<Output | undefined> {
+    const client = await this.clientRepository.getClientById(client_id);
     if (client) {
-      return client;
+      return {
+        account_id: client.account_id,
+        name: client.getName(),
+        email: client.getEmail(),
+        cpf: client.getCpf(),
+      };
     } else {
       throw new Error("Client not found");
     }
   }
+}
+
+//DTO
+type Output = {
+  account_id: string;
+  name: string;
+  email: string;
+  cpf: string;
 }

@@ -21,13 +21,13 @@ it("should create a client correctly", async () => {
     cpf: "87748248800",
   };
   const outputClient = await registerClient.execute(input);
-  expect(outputClient.account_id).toBeDefined();
+  expect(outputClient?.account_id).toBeDefined();
 
-  const outputGetClient = await getClientById.execute(outputClient.account_id);
+  const outputGetClient = await getClientById.execute(outputClient!.account_id);
 
-  expect(outputGetClient.name).toBe(input.name);
-  expect(outputGetClient.email).toBe(input.email);
-  expect(outputGetClient.cpf).toBe(input.cpf);
+  expect(outputGetClient?.name).toBe(input.name);
+  expect(outputGetClient?.email).toBe(input.email);
+  expect(outputGetClient?.cpf).toBe(input.cpf);
 });
 
 it("should return an error if the cpf is not valid", async () => {
@@ -76,7 +76,7 @@ it("should return client by cpf correctly", async () => {
   await registerClient.execute(input);
   const outputGetClient = await getClientByCpf.execute(input.cpf);
 
-  expect(outputGetClient.name).toBe(input.name);
-  expect(outputGetClient.email).toBe(input.email);
-  expect(outputGetClient.cpf).toBe(input.cpf);
+  expect(outputGetClient?.name).toBe(input.name);
+  expect(outputGetClient?.email).toBe(input.email);
+  expect(outputGetClient?.cpf).toBe(input.cpf);
 })

@@ -7,9 +7,9 @@ export default class Client {
    
   private constructor(
     readonly account_id: string,
-    readonly name: Name,
-    readonly email: Email,
-    readonly cpf: Cpf,
+    private name: Name,
+    private email: Email,
+    private cpf: Cpf,
   ) {}
 
     //static factory method
@@ -29,5 +29,14 @@ export default class Client {
         cpf: string
         ) {
         return new Client(account_id, new Name(name), new Email(email), new Cpf(cpf));
+    }
+    getName(): string {
+        return this.name.getValue();
+    }
+    getEmail(): string {
+        return this.email.getValue();
+    }
+    getCpf(): string {
+        return this.cpf.getValue();
     }
 }

@@ -13,9 +13,9 @@ it("should create a record in the customer table and query by id", async () => {
   );
 
   expect(savedAccountById?.account_id).toBe(client.account_id);
-  expect(savedAccountById?.name).toBe(client.name);
-  expect(savedAccountById?.email).toBe(client.email);
-  expect(savedAccountById?.cpf).toBe(client.cpf);
+  expect(savedAccountById?.getName()).toBe(client.getName());
+  expect(savedAccountById?.getEmail()).toBe(client.getEmail());
+  expect(savedAccountById?.getCpf()).toBe(client.getCpf());
   await connection.close();
 });
 
@@ -25,12 +25,12 @@ it("should create a record in the customer table and consult by email", async ()
   const accountDAO = new ClientRepositoryDatabase(connection);
   const outputClient = await accountDAO.createClient(client);
   const savedAccountByEmail = await accountDAO.getClientByEmail(
-    outputClient?.email,
+    outputClient?.getEmail(),
   );
 
   expect(savedAccountByEmail?.account_id).toBe(client.account_id);
-  expect(savedAccountByEmail?.name).toBe(client.name);
-  expect(savedAccountByEmail?.email).toBe(client.email);
-  expect(savedAccountByEmail?.cpf).toBe(client.cpf);
+  expect(savedAccountByEmail?.getName()).toBe(client.getName());
+  expect(savedAccountByEmail?.getEmail()).toBe(client.getEmail());
+  expect(savedAccountByEmail?.getCpf()).toBe(client.getCpf());
   await connection.close();
 });
