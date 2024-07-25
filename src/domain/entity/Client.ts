@@ -1,6 +1,6 @@
-import Cpf from "./Cpf";
-import Email from "./Email";
-import Name from "./Name";
+import Cpf from "../vo/Cpf";
+import Email from "../vo/Email";
+import Name from "../vo/Name";
 import { randomUUID } from "crypto";
 
 export default class Client {

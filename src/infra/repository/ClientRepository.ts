@@ -1,4 +1,4 @@
-import Client from "../../domain/Client";
+import Client from "../../domain/entity/Client";
 import DatabaseConnection from "../database/QueryBuilderDatabaseConnection";
 import { Knex } from "knex";
 

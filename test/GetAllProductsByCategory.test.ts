@@ -4,10 +4,10 @@ import { ProductRepositoryMemory } from "../src/infra/repository/ProductReposito
 
 describe('GetAllProductsByCategory.test', () => {
     it('should get all products by category correctly', async () => {
-        const productDAO = new ProductRepositoryMemory();
-        jest.spyOn(productDAO, 'getALLProductsByCategory')
-        const createProduct = new CreateProduct(productDAO);
-        const getAllProductsByCategory = new GetAllProductsByCategory(productDAO);
+        const productRepository = new ProductRepositoryMemory();
+        jest.spyOn(productRepository, 'getALLProductsByCategory')
+        const createProduct = new CreateProduct(productRepository);
+        const getAllProductsByCategory = new GetAllProductsByCategory(productRepository);
 
         const product = {
             name: 'Product 1',

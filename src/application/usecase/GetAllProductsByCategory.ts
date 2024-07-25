@@ -1,4 +1,4 @@
-import Product from "../../domain/Product";
+import Product from "../../domain/entity/Product";
 import { ProductRepository } from "../../infra/repository/ProductRepository";
 
 export class GetAllProductsByCategory {

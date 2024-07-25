@@ -1,4 +1,4 @@
-import Client from "../src/domain/Client";
+import Client from "../src/domain/entity/Client";
 import { ClientRepositoryDatabase } from "../src/infra/repository/ClientRepository";
 import { KnexAdapter } from "../src/infra/database/QueryBuilderDatabaseConnection";
 

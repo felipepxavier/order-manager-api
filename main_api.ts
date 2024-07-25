@@ -1,3 +1,5 @@
+import knex, { Knex } from "knex";
+
 import ClientController from "./src/infra/http/ClientController";
 import { ClientRepositoryDatabase } from "./src/infra/repository/ClientRepository";
 import { CreateProduct } from "./src/application/usecase/CreateProduct";
@@ -11,33 +13,69 @@ import { ProductRepositoryDatabase } from "./src/infra/repository/ProductReposit
 import { RegisterClient } from "./src/application/usecase/RegisterClient";
 import { RemoveProduct } from "./src/application/usecase/RemoveProduct";
 import { UpdateProduct } from "./src/application/usecase/UpdateProduct";
+import { config } from "./src/infra/database/config";
 
-//import db from './database/knex';
+const environment = process.env.NODE_ENV || "development";
+const db = knex(config[environment]);
 
-// // Criação da tabela se ela não existir
-// db.schema.hasTable('client').then((exists) => {
-//   if (!exists) {
-//     return db.schema.createTable('client', (table) => {
-//       table.uuid('account_id').primary();
-//       table.string('name').notNullable();
-//       table.string('email').notNullable();
-//       table.string('cpf').notNullable();
-//     });
-//   }
-// });
-
-//criacao da tabela de produtos
-// db.schema.hasTable('product').then((exists) => {
-//   if (!exists) {
-//     return db.schema.createTable('product', (table) => {
-//       table.uuid('product_id').primary();
-//       table.string('name').notNullable();
-//       table.string('description').notNullable();
-//       table.float('price').notNullable();
-//       table.string('category').notNullable();
-//     });
-//   }
-// });
+async function createTables() {
+    // Criar tabela de clientes
+    const clientsExists = await db.schema.hasTable('clients');
+    if (!clientsExists) {
+      await db.schema.createTable('clients', (table) => {
+        table.uuid('account_id').primary();
+        table.string('name').notNullable();
+        table.string('email').notNullable();
+        table.string('cpf').notNullable();
+        table.timestamp('created_at').defaultTo(db.fn.now());
+      });
+      console.log("Tabela 'clients' criada");
+    }
+  
+    // Criar tabela de produtos
+    const productsExists = await db.schema.hasTable('products');
+    if (!productsExists) {
+      await db.schema.createTable('products', (table) => {
+        table.uuid('product_id').primary();
+        table.string('name').notNullable();
+        table.string('description').notNullable();
+        table.float('price').notNullable();
+        table.string('category').notNullable();
+        table.timestamp('created_at').defaultTo(db.fn.now());
+      });
+      console.log("Tabela 'products' criada");
+    }
+  
+    // Criar tabela de pedidos
+    const ordersExists = await db.schema.hasTable('orders');
+    if (!ordersExists) {
+      await db.schema.createTable('orders', (table) => {
+        table.uuid('order_id').primary().defaultTo(db.raw('uuid_generate_v4()'));
+        table.string('status').notNullable();
+        table.timestamp('created_at').defaultTo(db.fn.now());
+      });
+      console.log("Tabela 'orders' criada");
+    }
+  
+    // Criar tabela de itens do pedido
+    const orderItemsExists = await db.schema.hasTable('order_items');
+    if (!orderItemsExists) {
+      await db.schema.createTable('order_items', (table) => {
+        table.uuid('order_item_id').primary().defaultTo(db.raw('uuid_generate_v4()'));
+        table.uuid('order_id').references('order_id').inTable('orders').onDelete('CASCADE');
+        table.uuid('product_id').references('product_id').inTable('products');
+        table.integer('quantity').notNullable();
+        table.float('price').notNullable();
+      });
+      console.log("Tabela 'order_items' criada");
+    }
+  }
+  
+  createTables().catch((err) => {
+    console.error('Erro ao criar tabelas:', err);
+  }).finally(() => {
+    db.destroy();
+  });
 
 const port = 3000;
 const httpServer = new ExpressAdapter();
