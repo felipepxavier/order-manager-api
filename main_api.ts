@@ -54,7 +54,8 @@ async function createTables() {
     const ordersExists = await db.schema.hasTable('orders');
     if (!ordersExists) {
       await db.schema.createTable('orders', (table) => {
-        table.uuid('order_id').primary().defaultTo(db.raw('uuid_generate_v4()'));
+        table.uuid('order_id').primary();
+        table.uuid('client_id').references('account_id').inTable('clients').onDelete('CASCADE');
         table.string('status').notNullable();
         table.timestamp('created_at').defaultTo(db.fn.now());
       });
@@ -65,7 +66,7 @@ async function createTables() {
     const orderItemsExists = await db.schema.hasTable('order_items');
     if (!orderItemsExists) {
       await db.schema.createTable('order_items', (table) => {
-        table.uuid('order_item_id').primary().defaultTo(db.raw('uuid_generate_v4()'));
+        table.uuid('order_item_id').primary();
         table.uuid('order_id').references('order_id').inTable('orders').onDelete('CASCADE');
         table.uuid('product_id').references('product_id').inTable('products');
         table.integer('quantity').notNullable();
@@ -99,7 +100,7 @@ const getAllProductsByCategory = new GetAllProductsByCategory(productRepository)
 new ProductController(httpServer, createProduct, updateProduct, removeProduct, getAllProductsByCategory);
 
 const orderRepository = new OrderRepositoryDatabase(connection);
-const createOrder = new CreateOrder(orderRepository, productRepository);
+const createOrder = new CreateOrder(orderRepository, productRepository, clientRepository);
 const getOrder = new GetOrder(orderRepository, productRepository);
 new OrderController(httpServer, createOrder, getOrder);
 

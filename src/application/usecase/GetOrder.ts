@@ -10,7 +10,7 @@ export default class GetOrder {
         if (!order?.order_id) {
             throw new Error("Order not found");
         }
-        const orderRestored = Order.restore(order.order_id, order.products, order.status);
+        const orderRestored = Order.restore(order.client_id, order.order_id, order.products, order.status);
 
         const products = await Promise.all(orderRestored.products.map(async product => {
             const productData = await this.productRepository.getProductById(product.product_id);

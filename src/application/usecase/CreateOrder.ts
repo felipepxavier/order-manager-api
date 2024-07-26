@@ -1,11 +1,17 @@
+import { ClientRepository } from "../../infra/repository/ClientRepository";
 import Order from "../../domain/entity/Order";
 import { OrderRepository } from "../../infra/repository/OrderRepository";
 import { ProductRepository } from "../../infra/repository/ProductRepository";
 
 export class CreateOrder {
-  constructor(readonly orderRepository: OrderRepository, readonly productRepository: ProductRepository) {}
+  constructor(readonly orderRepository: OrderRepository, readonly productRepository: ProductRepository, readonly clientRepository: ClientRepository) {}
 
-  async execute({ products }: Input): Promise<Output> {
+  async execute({ client_id, products }: Input): Promise<Output> {
+    const client = await this.clientRepository.getClientById(client_id);
+    if (!client) {
+        throw new Error("Client not found");
+    }
+    
     const existenceChecks = products.map(async product => {
     const exists = await this.productRepository.getProductById(product.product_id);
         return !!exists;
@@ -18,7 +24,7 @@ export class CreateOrder {
       throw new Error("Some product does not exist");
     }
 
-    const order = Order.create(products); 
+    const order = Order.create({ client_id, products }); 
     const insertedOrder = await this.orderRepository.createOrder(order);
 
     return {
@@ -28,11 +34,12 @@ export class CreateOrder {
 }
 
 type Input = {
-    products: {
-        product_id: string;
-        quantity: number;
-        price: number;
-    }[];
+  client_id: string;
+  products: {
+      product_id: string;
+      quantity: number;
+      price: number;
+  }[];
 };
 
 type Output = {
