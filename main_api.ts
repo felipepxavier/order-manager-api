@@ -2,12 +2,16 @@ import knex, { Knex } from "knex";
 
 import ClientController from "./src/infra/http/ClientController";
 import { ClientRepositoryDatabase } from "./src/infra/repository/ClientRepository";
+import { CreateOrder } from "./src/application/usecase/CreateOrder";
 import { CreateProduct } from "./src/application/usecase/CreateProduct";
 import { ExpressAdapter } from "./src/infra/http/HttpServer";
 import { GetAllProductsByCategory } from "./src/application/usecase/GetAllProductsByCategory";
 import { GetClientByCpf } from "./src/application/usecase/GetClientByCpf";
 import { GetClientById } from "./src/application/usecase/GetClientById";
+import GetOrder from "./src/application/usecase/GetOrder";
 import { KnexAdapter } from "./src/infra/database/QueryBuilderDatabaseConnection";
+import OrderController from "./src/infra/http/OrderController";
+import { OrderRepositoryDatabase } from "./src/infra/repository/OrderRepository";
 import ProductController from "./src/infra/http/ProductController";
 import { ProductRepositoryDatabase } from "./src/infra/repository/ProductRepository";
 import { RegisterClient } from "./src/application/usecase/RegisterClient";
@@ -93,6 +97,11 @@ const updateProduct = new UpdateProduct(productRepository);
 const removeProduct = new RemoveProduct(productRepository);
 const getAllProductsByCategory = new GetAllProductsByCategory(productRepository);
 new ProductController(httpServer, createProduct, updateProduct, removeProduct, getAllProductsByCategory);
+
+const orderRepository = new OrderRepositoryDatabase(connection);
+const createOrder = new CreateOrder(orderRepository, productRepository);
+const getOrder = new GetOrder(orderRepository, productRepository);
+new OrderController(httpServer, createOrder, getOrder);
 
 httpServer.listen(port);
 
