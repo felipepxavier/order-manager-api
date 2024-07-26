@@ -62,3 +62,71 @@ describe("getClient", () => {
     expect(responseClient.data.message).toBe("Client not found");
   });
 });
+
+
+
+describe('Orders', () => {
+
+  it("should create an order correctly", async () => {
+    const client = {
+      name: "John Test",
+      email: `john.doe${Math.random()}@gmail.com`,
+      cpf: "87748248800",
+    };
+    const responseClient = await axios.post(
+      "http://localhost:3000/clients",
+      client,
+    );
+    const client_id = responseClient.data.account_id;
+
+    const product = {
+      name: "Product Test",
+      description: "Product Test Description",
+      price: 10.0,
+      category: "Test",
+    };
+    const responseProduct = await axios.post(
+      "http://localhost:3000/products",
+      product,
+    );
+    const product_id = responseProduct.data.product_id;
+
+    const order = {
+      client_id,
+      products: [
+        {
+          product_id,
+          quantity: 2,
+          price: 10.0,
+        },
+      ],
+    };
+    const responseOrder = await axios.post(
+      "http://localhost:3000/orders",
+      order,
+    );
+    const outputOrder = responseOrder.data;
+    expect(outputOrder.order_id).toBeDefined();
+  });
+
+
+  it("should return an error if the client not found", async () => {
+    const order = {
+      client_id: randomUUID(),
+      products: [
+        {
+          product_id: randomUUID(),
+          quantity: 2,
+          price: 10.0,
+        },
+      ],
+    };
+    const responseOrder = await axios.post(
+      "http://localhost:3000/orders",
+      order,
+    );
+    expect(responseOrder.status).toBe(422);
+    expect(responseOrder.data.message).toBe("Client not found");
+  });
+})
+
