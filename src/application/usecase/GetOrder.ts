@@ -1,16 +1,17 @@
+import { ClientRepository } from "../../infra/repository/ClientRepository";
 import Order from "../../domain/entity/Order";
 import { OrderRepository } from "../../infra/repository/OrderRepository";
 import { ProductRepository } from "../../infra/repository/ProductRepository";
 
 export default class GetOrder {
-    constructor(readonly orderRepository: OrderRepository, readonly productRepository: ProductRepository) {}
+    constructor(readonly orderRepository: OrderRepository, readonly productRepository: ProductRepository, readonly clientRepository: ClientRepository) {}
 
     async execute({ order_id }: Input): Promise<Output | undefined> {
         const order = await this.orderRepository.getOrderById(order_id);
         if (!order?.order_id) {
             throw new Error("Order not found");
         }
-        const orderRestored = Order.restore(order.order_id, order.products, order.status, order.client_id);
+        const orderRestored = Order.restore(order.order_id, order.products, order.getStatus(), order.client_id);
 
         const products = await Promise.all(orderRestored.products.map(async product => {
             const productData = await this.productRepository.getProductById(product.product_id);
@@ -24,9 +25,15 @@ export default class GetOrder {
             };
         }));
 
+        let client;
+        if (orderRestored.client_id) {
+            client = await this.clientRepository.getClientById(orderRestored.client_id);
+        }
+
         return {
             order_id: orderRestored.order_id,
-            status: orderRestored.status,
+            status: orderRestored.getStatus(),
+            client_name: client?.getName(),
             products
         };
     }
@@ -47,4 +54,5 @@ type Output = {
         category: string
     }[];
     status: string;
+    client_name: string | undefined;
 };
