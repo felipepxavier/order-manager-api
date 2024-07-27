@@ -18,21 +18,21 @@ export class ClientRepositoryDatabase implements ClientRepository {
   }
   
   async getClientByEmail(email: string): Promise<Client | undefined> {
-    const client = await this.db<any>("client").where({ email }).first();
+    const client = await this.db<any>("clients").where({ email }).first();
     if (!client) {
       return undefined;
     } 
     return Client.restore(client.account_id, client.name, client.email, client.cpf); 
   }
   async getClientById(account_id: string): Promise<Client | undefined> {
-    const client = await this.db<any>("client").where({ account_id }).first();
+    const client = await this.db<any>("clients").where({ account_id }).first();
     if (!client) {
       return undefined;
     }
     return Client.restore(client.account_id, client.name, client.email, client.cpf);
   }
   async getClientByCPF(cpf: string): Promise<Client | undefined> {
-    const client = await this.db<any>("client").where({ cpf }).first();
+    const client = await this.db<any>("clients").where({ cpf }).first();
 
     if (!client) {
       return undefined;
@@ -40,7 +40,7 @@ export class ClientRepositoryDatabase implements ClientRepository {
     return Client.restore(client.account_id, client.name, client.email, client.cpf);
   }
   async createClient(client: Client): Promise<Client> {
-    const [insertedClient] = await this.db<any>("client")
+    const [insertedClient] = await this.db<any>("clients")
       .insert({
         account_id: client.account_id,
         name: client.getName(),

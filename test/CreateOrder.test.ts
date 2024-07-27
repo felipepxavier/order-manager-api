@@ -28,7 +28,7 @@ describe('CreateOrder.test.ts', () => {
         const product1 = await createProduct.execute({ name: 'product1', description: 'description1', price: 10, category: 'drink' })
         const product2 = await createProduct.execute({ name: 'product2', description: 'description2', price: 30, category: 'drink' })
 
-        const createOrder = new CreateOrder(orderRepository, productRepository, clientRepository)
+        const createOrder = new CreateOrder(orderRepository, productRepository, clientRepository) 
 
         const orderProdcuts = [
             { product_id: product1.product_id, quantity: 2, price: product1.price },
@@ -37,7 +37,7 @@ describe('CreateOrder.test.ts', () => {
         const outputCreateOrder = await createOrder.execute({ products: orderProdcuts, client_id: outputClient!.account_id })
         expect(outputCreateOrder.order_id).toBeDefined();
 
-        const getOrderById = new GetOrder(orderRepository, productRepository)
+        const getOrderById = new GetOrder(orderRepository, productRepository, clientRepository)
         const outputGetOrderById = await getOrderById.execute({ order_id: outputCreateOrder.order_id })
         expect(outputCreateOrder?.order_id).toBe(outputGetOrderById?.order_id);
         expect(outputGetOrderById?.products.length).toBe(orderProdcuts.length)
