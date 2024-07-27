@@ -101,7 +101,7 @@ new ProductController(httpServer, createProduct, updateProduct, removeProduct, g
 
 const orderRepository = new OrderRepositoryDatabase(connection);
 const createOrder = new CreateOrder(orderRepository, productRepository, clientRepository);
-const getOrder = new GetOrder(orderRepository, productRepository);
+const getOrder = new GetOrder(orderRepository, productRepository, clientRepository);
 new OrderController(httpServer, createOrder, getOrder);
 
 httpServer.listen(port);

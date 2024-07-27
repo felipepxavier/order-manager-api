@@ -27,7 +27,7 @@ export class OrderRepositoryDatabase implements OrderRepository {
         this.db = this.databaseConnection.builder();
     }
     async getALLOrders(): Promise<Order[] | undefined> {
-        const orders = await this.db<Order>("orders").select("*");
+        const orders = await this.db<any>("orders").select("*");
         return orders?.map((order) => Order.restore(order.order_id, order.products, order.status, order.client_id));
     }
     async createOrder(order: Order): Promise<{ order_id: string, status: string }> {
@@ -35,7 +35,8 @@ export class OrderRepositoryDatabase implements OrderRepository {
         try {
             const [insertedOrder] = await trx("orders").insert({
                 order_id: order.order_id,
-                status: order.status
+                status: order.getStatus(),
+                client_id: order.client_id 
             }).returning("*");
 
             const orderItems = order.products.map((item) => ({
@@ -59,7 +60,7 @@ export class OrderRepositoryDatabase implements OrderRepository {
         const trx = await this.db.transaction();
         try {
             const [updatedOrder] = await trx("orders").where({ order_id: order.order_id }).update({
-                status: order.status
+                status: order.getStatus(),
             }).returning("*");
 
             await trx("order_items").where({ order_id: order.order_id }).delete();
@@ -82,7 +83,7 @@ export class OrderRepositoryDatabase implements OrderRepository {
         }
     }
     async getOrderById(order_id: string): Promise<Order | undefined> {
-        const order = await this.db<Order>("orders").where({ order_id }).first();
+        const order = await this.db<any>("orders").where({ order_id }).first();
         if (!order) {
             return undefined;
         }
@@ -90,10 +91,9 @@ export class OrderRepositoryDatabase implements OrderRepository {
         const orderProducts = orderItemsData.map((item: OrderItem) => 
             new OrderProduct(item.order_item_id, item.product_id, item.quantity, item.price));
 
-        return Order.restore(order.order_id, orderProducts, order.status, order.client_id);
+        return Order.restore(order.order_id, orderProducts, order.status, order.client_id); 
     }
 }
-
 
 export class OrderRepositoryMemory implements OrderRepository {
     private orders: Order[] = [];
@@ -103,7 +103,7 @@ export class OrderRepositoryMemory implements OrderRepository {
     }
     async createOrder(order: Order): Promise<{ order_id: string, status: string }> {
         this.orders.push(order);
-        return { order_id: order.order_id, status: order.status };
+        return { order_id: order.order_id, status: order.getStatus() };
     }
     async updateOrder(order: Order): Promise<Order> {
         const index = this.orders.findIndex((o) => o.order_id === order.order_id);

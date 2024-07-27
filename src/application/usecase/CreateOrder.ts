@@ -28,7 +28,7 @@ export class CreateOrder {
     }
 
     const order = Order.create({ client_id, products }); 
-    const insertedOrder = await this.orderRepository.createOrder(order);
+    const insertedOrder = await this.orderRepository.createOrder(order); 
 
     return {
       order_id: insertedOrder.order_id

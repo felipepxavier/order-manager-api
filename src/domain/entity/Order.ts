@@ -1,3 +1,5 @@
+import OrderStatus, { OrderStatusFactory } from "../vo/OrderStatus";
+
 import OrderProduct from "../vo/OrderProduct";
 import { randomUUID } from "crypto";
 
@@ -8,15 +10,19 @@ export type OrderProductDTO = {
 }
 
 export default class Order {
+    status: OrderStatus;
+
     private constructor(
         readonly order_id: string,
         readonly products: OrderProduct[],
-        readonly status: string,
+        status: string,
         readonly client_id?: string,
-    ) {}
+    ) {
+        this.status = OrderStatusFactory.create(this, status);
+    }
 
     //static factory method
-    static create(
+    static create( 
        { client_id, products }: { client_id: string, products: OrderProductDTO[] }
     ) {
         const order_id = randomUUID();
@@ -36,5 +42,25 @@ export default class Order {
         client_id?: string
     ) {
         return new Order(order_id, products, status, client_id);
+    }
+
+    receive() {
+        this.status.receive();
+    }
+
+    prepare() {
+        this.status.prepare();
+    }
+
+    ready() {
+        this.status.ready();
+    }
+
+    finish() {
+        this.status.finish();
+    }
+
+    getStatus() {
+        return this.status.value;
     }
 }
