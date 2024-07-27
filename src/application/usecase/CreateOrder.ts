@@ -7,9 +7,12 @@ export class CreateOrder {
   constructor(readonly orderRepository: OrderRepository, readonly productRepository: ProductRepository, readonly clientRepository: ClientRepository) {}
 
   async execute({ client_id, products }: Input): Promise<Output> {
-    const client = await this.clientRepository.getClientById(client_id);
-    if (!client) {
-        throw new Error("Client not found");
+
+    if (client_id) {
+      const client = await this.clientRepository.getClientById(client_id);
+      if (!client) {
+          throw new Error("Client not found");
+      }
     }
     
     const existenceChecks = products.map(async product => {

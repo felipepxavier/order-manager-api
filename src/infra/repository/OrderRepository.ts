@@ -28,7 +28,7 @@ export class OrderRepositoryDatabase implements OrderRepository {
     }
     async getALLOrders(): Promise<Order[] | undefined> {
         const orders = await this.db<Order>("orders").select("*");
-        return orders?.map((order) => Order.restore(order.client_id, order.order_id, order.products, order.status));
+        return orders?.map((order) => Order.restore(order.order_id, order.products, order.status, order.client_id));
     }
     async createOrder(order: Order): Promise<{ order_id: string, status: string }> {
         const trx = await this.db.transaction();
@@ -75,7 +75,7 @@ export class OrderRepositoryDatabase implements OrderRepository {
             await trx("order_items").insert(orderItems);
 
             await trx.commit();
-            return Order.restore(updatedOrder.client_id, updatedOrder.order_id, order.products, updatedOrder.status);
+            return Order.restore(updatedOrder.order_id, order.products, updatedOrder.status, updatedOrder.client_id);
         } catch (error) {
             await trx.rollback();
             throw error;
@@ -90,7 +90,7 @@ export class OrderRepositoryDatabase implements OrderRepository {
         const orderProducts = orderItemsData.map((item: OrderItem) => 
             new OrderProduct(item.order_item_id, item.product_id, item.quantity, item.price));
 
-        return Order.restore(order.client_id, order.order_id, orderProducts, order.status);
+        return Order.restore(order.order_id, orderProducts, order.status, order.client_id);
     }
 }
 

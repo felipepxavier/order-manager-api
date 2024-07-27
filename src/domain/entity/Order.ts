@@ -9,10 +9,10 @@ export type OrderProductDTO = {
 
 export default class Order {
     private constructor(
-        readonly client_id: string,
         readonly order_id: string,
         readonly products: OrderProduct[],
         readonly status: string,
+        readonly client_id?: string,
     ) {}
 
     //static factory method
@@ -25,16 +25,16 @@ export default class Order {
             const order_item_id = randomUUID()
            return  new OrderProduct(order_item_id, product.product_id, product.quantity, product.price)
         });
-        return new Order(client_id, order_id, orderProducts, status); 
+        return new Order(order_id, orderProducts, status, client_id); 
     }
 
     //static factory method
     static restore(
-        client_id: string,
         order_id: string,
         products: OrderProduct[],
-        status: string
+        status: string,
+        client_id?: string
     ) {
-        return new Order(client_id, order_id, products, status);
+        return new Order(order_id, products, status, client_id);
     }
 }
