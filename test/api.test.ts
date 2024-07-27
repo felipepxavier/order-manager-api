@@ -28,7 +28,6 @@ describe("RegisterClient", () => {
     expect(outputGetClient.email).toBe(input.email);
     expect(outputGetClient.cpf).toBe(input.cpf);
   });
-
   it("should return an error if the name is not valid", async () => {
     const input = {
       name: "",
@@ -53,7 +52,6 @@ describe("getClient", () => {
     expect(responseClient.status).toBe(422);
     expect(responseClient.data.message).toBe("Client not found");
   });
-
   it("should return an error if the client by cpf not found", async () => {
     const responseClient = await axios.get(
       `http://localhost:3000/clients/cpf/${randomUUID()}`,
@@ -63,11 +61,8 @@ describe("getClient", () => {
   });
 });
 
-
-
-describe('Orders', () => {
-
-  it("should create an order correctly", async () => {
+describe('CreateOrder', () => {
+  it("should create an order with client identification correctly", async () => {
     const client = {
       name: "John Test",
       email: `john.doe${Math.random()}@gmail.com`,
@@ -108,7 +103,36 @@ describe('Orders', () => {
     const outputOrder = responseOrder.data;
     expect(outputOrder.order_id).toBeDefined();
   });
-
+  
+  it("should create an order without client identification correctly", async () => {
+    const product = {
+      name: "Product Test",
+      description: "Product Test Description",
+      price: 10.0,
+      category: "Test",
+    };
+    const responseProduct = await axios.post(
+      "http://localhost:3000/products",
+      product,
+    );
+    const product_id = responseProduct.data.product_id;
+    
+    const order = {
+      products: [
+        {
+          product_id,
+          quantity: 2,
+          price: product.price,
+        },
+      ],
+    };
+    const responseOrder = await axios.post(
+      "http://localhost:3000/orders",
+      order,
+    );
+    const outputOrder = responseOrder.data;
+    expect(outputOrder.order_id).toBeDefined();
+  });
 
   it("should return an error if the client not found", async () => {
     const order = {
