@@ -31,13 +31,15 @@ describe('GetOrder.test.ts', () => {
             { product_id: product1.product_id, quantity: 2, price: product1.price },
             { product_id: product2.product_id, quantity: 1, price: product2.price }
         ]
+        
         const outputCreateOrder = await createOrder.execute({ client_id: outputClient!.account_id, products: orderProdcuts })
 
-        const getOrder = new GetOrder(orderRepository, productRepository);
+        const getOrder = new GetOrder(orderRepository, productRepository, clientRepository);
         const order = await getOrder.execute({ order_id: outputCreateOrder.order_id });
        
         expect(order?.order_id).toBeDefined();
         expect(order?.products).toHaveLength(2);
+        expect(order?.client_name).toBe(input.name)
         await connection.close();
     })
 })
