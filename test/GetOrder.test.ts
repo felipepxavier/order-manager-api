@@ -40,6 +40,8 @@ describe('GetOrder.test.ts', () => {
         expect(order?.order_id).toBeDefined();
         expect(order?.products).toHaveLength(2);
         expect(order?.client_name).toBe(input.name)
+        expect(order?.status).toBe('pending')
+        expect(order?.total_price).toBe(40)
         await connection.close();
     })
 })
