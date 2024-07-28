@@ -44,6 +44,10 @@ export default class Order {
         return new Order(order_id, products, status, client_id);
     }
 
+    calculateTotalPrice() {
+        return this.products.reduce((total, product) => total + product.price, 0);
+    }
+
     receive() {
         this.status.receive();
     }

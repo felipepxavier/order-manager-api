@@ -32,6 +32,7 @@ export default class GetOrder {
 
         return {
             order_id: orderRestored.order_id,
+            total_price: orderRestored.calculateTotalPrice(),
             status: orderRestored.getStatus(),
             client_name: client?.getName(),
             products
@@ -45,6 +46,7 @@ type Input = {
 
 type Output = {
     order_id: string;
+    total_price: number;
     products: {
         product_id: string,
         quantity: number;
