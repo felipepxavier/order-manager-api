@@ -15,19 +15,26 @@ export class CreateOrder {
       }
     }
     
-    const existenceChecks = products.map(async product => {
-    const exists = await this.productRepository.getProductById(product.product_id);
-        return !!exists;
+    const productsPromisses = products.map(async product => {
+    const productItem = await this.productRepository.getProductById(product.product_id);
+      if (!productItem) {
+        throw new Error("Some product does not exist");
+      }
+      return productItem
     });
 
-    const results = await Promise.all(existenceChecks);
-    const isSomeProductNotExists = results.some(exists => !exists);
-    
-    if (isSomeProductNotExists) {
-      throw new Error("Some product does not exist");
-    }
+    const restoredProducts = await Promise.all(productsPromisses);
 
-    const order = Order.create({ client_id, products }); 
+    const productsWithPrice = products.map((product) => {
+        const price = restoredProducts.find(restoredProduct => restoredProduct!.product_id === product.product_id)!.price;
+      return {
+        product_id: product.product_id,
+        quantity: product.quantity,
+        price
+      }
+    });
+
+    const order = Order.create({ client_id, products: productsWithPrice }); 
     const insertedOrder = await this.orderRepository.createOrder(order); 
 
     return {
@@ -41,7 +48,7 @@ type Input = {
   products: {
       product_id: string;
       quantity: number;
-      price: number;
+      //price: number;
   }[];
 };
 
