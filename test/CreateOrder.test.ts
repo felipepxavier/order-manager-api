@@ -31,8 +31,8 @@ describe('CreateOrder.test.ts', () => {
         const createOrder = new CreateOrder(orderRepository, productRepository, clientRepository) 
 
         const orderProdcuts = [
-            { product_id: product1.product_id, quantity: 2, price: product1.price },
-            { product_id: product2.product_id, quantity: 1, price: product2.price }
+            { product_id: product1.product_id, quantity: 2 },
+            { product_id: product2.product_id, quantity: 1 }
         ]
         const outputCreateOrder = await createOrder.execute({ products: orderProdcuts, client_id: outputClient!.account_id })
         expect(outputCreateOrder.order_id).toBeDefined();

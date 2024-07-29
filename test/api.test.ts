@@ -91,8 +91,7 @@ describe('CreateOrder', () => {
       products: [
         {
           product_id,
-          quantity: 2,
-          price: 10.0,
+          quantity: 2
         },
       ],
     };
@@ -121,8 +120,7 @@ describe('CreateOrder', () => {
       products: [
         {
           product_id,
-          quantity: 2,
-          price: product.price,
+          quantity: 2
         },
       ],
     };
@@ -140,8 +138,7 @@ describe('CreateOrder', () => {
       products: [
         {
           product_id: randomUUID(),
-          quantity: 2,
-          price: 10.0,
+          quantity: 2
         },
       ],
     };
@@ -152,5 +149,35 @@ describe('CreateOrder', () => {
     expect(responseOrder.status).toBe(422);
     expect(responseOrder.data.message).toBe("Client not found");
   });
+
+  it("should return an error if the product not found", async () => {
+    const client = {
+      name: "John Test",
+      email: `john.doe${Math.random()}@gmail.com`,
+      cpf: "87748248800",
+    };
+    const responseClient = await axios.post(
+      "http://localhost:3000/clients",
+      client,
+    );
+    const client_id = responseClient.data.account_id;
+
+    const order = {
+      client_id,
+      products: [
+        {
+          product_id: randomUUID(),
+          quantity: 2
+        },
+      ],
+    };
+    const responseOrder = await axios.post(
+      "http://localhost:3000/orders",
+      order,
+    );
+    expect(responseOrder.status).toBe(422);
+    expect(responseOrder.data.message).toBe("Some product does not exist");
+  });
+
 })
 
