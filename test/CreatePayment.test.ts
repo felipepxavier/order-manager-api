@@ -35,6 +35,37 @@ describe('CreatePayment.test', () => {
         expect(payment.status).toBe('approved');
     })
 
+    it('should update order status to received after payment approved', async () => {
+        const paymentRepository = new PaymentRepositoryMemory();
+        const orderRepository = new OrderRepositoryMemory();
+      
+        const orderData = {
+            client_id: '1',
+            status: 'open',
+            products: [
+                {
+                    product_id: '1',
+                    quantity: 1,
+                    price: 100
+                }
+            ]
+        };
+
+        const order = Order.create(orderData);
+        const orderCreated = await orderRepository.createOrder(order);
+
+        const createPayment = new CreatePayment(paymentRepository, orderRepository);
+
+        const paymentData = {
+            order_id: orderCreated.order_id,
+            payment_method: 'Pix'
+        };
+
+        const payment = await createPayment.execute(paymentData);
+        const orderRestored = await orderRepository.getOrderById(orderCreated.order_id);
+        expect(orderRestored?.getStatus()).toBe('received');
+    })
+
     it('should create a payment with rejected status if payment process failure', async () => {
         const paymentRepository = new PaymentRepositoryMemory();
         const orderRepository = new OrderRepositoryMemory();
