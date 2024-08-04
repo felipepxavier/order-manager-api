@@ -1,8 +1,7 @@
-import knex, { Knex } from "knex";
-
 import ClientController from "./src/infra/http/ClientController";
 import { ClientRepositoryDatabase } from "./src/infra/repository/ClientRepository";
 import { CreateOrder } from "./src/application/usecase/CreateOrder";
+import { CreatePayment } from "./src/application/usecase/CreatePayment";
 import { CreateProduct } from "./src/application/usecase/CreateProduct";
 import { ExpressAdapter } from "./src/infra/http/HttpServer";
 import { GetAllProductsByCategory } from "./src/application/usecase/GetAllProductsByCategory";
@@ -12,12 +11,15 @@ import GetOrder from "./src/application/usecase/GetOrder";
 import { KnexAdapter } from "./src/infra/database/QueryBuilderDatabaseConnection";
 import OrderController from "./src/infra/http/OrderController";
 import { OrderRepositoryDatabase } from "./src/infra/repository/OrderRepository";
+import PaymentController from "./src/infra/http/PaymentController";
+import { PaymentRepositoryDatabase } from "./src/infra/repository/PaymentRepository";
 import ProductController from "./src/infra/http/ProductController";
 import { ProductRepositoryDatabase } from "./src/infra/repository/ProductRepository";
 import { RegisterClient } from "./src/application/usecase/RegisterClient";
 import { RemoveProduct } from "./src/application/usecase/RemoveProduct";
 import { UpdateProduct } from "./src/application/usecase/UpdateProduct";
 import { config } from "./src/infra/database/config";
+import knex from "knex";
 
 const environment = process.env.NODE_ENV || "development";
 const db = knex(config[environment]);
@@ -74,7 +76,21 @@ async function createTables() {
       });
       console.log("Tabela 'order_items' criada");
     }
-  }
+
+    // Criar tabela de pagamentos
+    const paymentsExists = await db.schema.hasTable('payments');
+    if (!paymentsExists) {
+      await db.schema.createTable('payments', (table) => {
+        table.uuid('payment_id').primary();
+        table.uuid('order_id').references('order_id').inTable('orders').onDelete('CASCADE');
+        table.string('payment_method').notNullable();
+        table.float('amount').notNullable();
+        table.string('status').notNullable();
+        table.timestamp('created_at').defaultTo(db.fn.now());
+      });
+      console.log("Tabela 'payments' criada");
+    }
+}
   
   createTables().catch((err) => {
     console.error('Erro ao criar tabelas:', err);
@@ -104,9 +120,8 @@ const createOrder = new CreateOrder(orderRepository, productRepository, clientRe
 const getOrder = new GetOrder(orderRepository, productRepository, clientRepository);
 new OrderController(httpServer, createOrder, getOrder);
 
+const paymentRepository = new PaymentRepositoryDatabase(connection);
+const createPayment = new CreatePayment(paymentRepository, orderRepository);
+new PaymentController(httpServer, createPayment);
+
 httpServer.listen(port);
-
-
-
-
-
