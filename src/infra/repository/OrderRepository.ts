@@ -15,7 +15,7 @@ type OrderItem = {
 export interface OrderRepository {
     getALLOrders(): Promise<Order[] | undefined>;
     createOrder(order: Order): Promise<{ order_id: string, status: string }>;
-    updateOrder(order: Order): Promise<Order>;
+    updateStatus(order: Order): Promise<Order>;
     getOrderById(order_id: string): Promise<Order | undefined>;
 }
 
@@ -56,7 +56,7 @@ export class OrderRepositoryDatabase implements OrderRepository {
             throw error;
         }
     }
-    async updateOrder(order: Order): Promise<Order> {
+    async updateStatus(order: Order): Promise<Order> {
         const trx = await this.db.transaction();
         try {
             const [updatedOrder] = await trx("orders").where({ order_id: order.order_id }).update({
@@ -105,7 +105,7 @@ export class OrderRepositoryMemory implements OrderRepository {
         this.orders.push(order);
         return { order_id: order.order_id, status: order.getStatus() };
     }
-    async updateOrder(order: Order): Promise<Order> {
+    async updateStatus(order: Order): Promise<Order> {
         const index = this.orders.findIndex((o) => o.order_id === order.order_id);
         if (index !== -1) {
             this.orders[index] = order;

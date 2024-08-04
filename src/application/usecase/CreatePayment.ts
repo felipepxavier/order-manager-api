@@ -20,6 +20,8 @@ export class CreatePayment {
     if (processPayment.status === 'approved') {
         payment.approve();
         await this.paymentRepository.updateStatus(payment);
+        orderRestored.receive();
+        await this.orderRepository.updateStatus(orderRestored);
     } else {
         payment.reject();
         await this.paymentRepository.updateStatus(payment);
