@@ -3,8 +3,8 @@ import { ProductRepositoryMemory } from "../src/infra/repository/ProductReposito
 
 describe('CreateProduct.test', () => {
     it('should create a product correctly', async () => {
-        const productDAO = new ProductRepositoryMemory();
-        const createProduct = new CreateProduct(productDAO);
+        const productRepository = new ProductRepositoryMemory();
+        const createProduct = new CreateProduct(productRepository);
         const product = {
             name: 'Product 1',
             description: 'Description 1',
