@@ -2,23 +2,23 @@ import type { Knex } from "knex";
 
 export const config: { [key: string]: Knex.Config } = {
   development: {  
-    client: "pg",
+    client: process.env.DB_CLIENT,
     connection: {
-      host: "127.0.0.1",
-      port: 5432,
-      user: "postgres",
-      database: "ifood_db",
-      password: "123456",
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT),
+      user: process.env.DB_USER,
+      database: process.env.DB_NAME,
+      password: process.env.DB_PASSWORD,
     },
   },
   test: {
-    client: "pg",
+    client: process.env.DB_CLIENT,
     connection: {
-      host: "127.0.0.1",
-      port: 5432,
-      user: "postgres",
-      database: "ifood_db",
-      password: "123456",
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT),
+      user: process.env.DB_USER,
+      database: process.env.DB_NAME,
+      password: process.env.DB_PASSWORD,
     },
   },
 };

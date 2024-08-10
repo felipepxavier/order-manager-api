@@ -19,9 +19,14 @@ import { RegisterClient } from "./src/application/usecase/RegisterClient";
 import { RemoveProduct } from "./src/application/usecase/RemoveProduct";
 import { UpdateProduct } from "./src/application/usecase/UpdateProduct";
 import { config } from "./src/infra/database/config";
+import dotenv from 'dotenv';
 import knex from "knex";
 
+dotenv.config();
+
 const environment = process.env.NODE_ENV || "development";
+const port = Number(process.env.API_PORT || 3000);
+
 const db = knex(config[environment]);
 
 async function createTables() {
@@ -98,7 +103,6 @@ async function createTables() {
     db.destroy();
   });
 
-const port = 3000;
 const httpServer = new ExpressAdapter();
 const connection = new KnexAdapter();
 
@@ -118,10 +122,10 @@ new ProductController(httpServer, createProduct, updateProduct, removeProduct, g
 const orderRepository = new OrderRepositoryDatabase(connection);
 const createOrder = new CreateOrder(orderRepository, productRepository, clientRepository);
 const getOrder = new GetOrder(orderRepository, productRepository, clientRepository);
-new OrderController(httpServer, createOrder, getOrder);
+new OrderController(httpServer, createOrder, getOrder); //depende do CLIENT e do PRODUCT
 
 const paymentRepository = new PaymentRepositoryDatabase(connection);
-const createPayment = new CreatePayment(paymentRepository, orderRepository);
-new PaymentController(httpServer, createPayment);
+const createPayment = new CreatePayment(paymentRepository, orderRepository); 
+new PaymentController(httpServer, createPayment); //depende do ORDER
 
 httpServer.listen(port);

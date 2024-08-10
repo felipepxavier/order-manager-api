@@ -1,10 +1,10 @@
 import { ClientRepository } from "../../infra/repository/ClientRepository";
 
 export class GetClientByCpf {
-  constructor(readonly clientDAO: ClientRepository) {}
+  constructor(readonly clientRepository: ClientRepository) {}
 
   async execute(cpf: string): Promise<Output | undefined> {
-    const client = await this.clientDAO.getClientByCPF(cpf);
+    const client = await this.clientRepository.getClientByCPF(cpf);
     if (client) {
       return {
         account_id: client.account_id,
