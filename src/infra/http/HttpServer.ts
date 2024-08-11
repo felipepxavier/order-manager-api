@@ -1,6 +1,9 @@
 //framework and driver
 
+import YAML from 'yamljs';
 import express from "express";
+import path from 'path';
+import swaggerUi from 'swagger-ui-express';
 
 export default interface HttpServer {
     register(method: string, route: string, handler: Function): void;
@@ -13,9 +16,14 @@ export class ExpressAdapter implements HttpServer {
     constructor() {
         this.app = express();
         this.app.use(express.json());
+
+        const swaggerDocument = YAML.load(path.resolve(__dirname, './swagger.yaml'));
+        swaggerDocument.servers = [{ url: `http://localhost:${process.env.API_PORT}` }];
+        this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
     }
 
     register(method: string, route: string, handler: Function): void {
+
         this.app[method](route, async (req: any, res: any) => {
             try {
                 const output = await handler(req);
@@ -28,6 +36,7 @@ export class ExpressAdapter implements HttpServer {
 
     listen(port: number): void {
         this.app.listen(port);
-        console.log(`Server is running at http://localhost:${port} `);
+        console.log(`Server is running at http://localhost:${port}`);
+        console.log(`Swagger API documentation is available at: http://localhost:${port}/api-docs`);
     }
 }

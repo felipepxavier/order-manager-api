@@ -122,10 +122,10 @@ new ProductController(httpServer, createProduct, updateProduct, removeProduct, g
 const orderRepository = new OrderRepositoryDatabase(connection);
 const createOrder = new CreateOrder(orderRepository, productRepository, clientRepository);
 const getOrder = new GetOrder(orderRepository, productRepository, clientRepository);
-new OrderController(httpServer, createOrder, getOrder); //depende do CLIENT e do PRODUCT
+new OrderController(httpServer, createOrder, getOrder);
 
 const paymentRepository = new PaymentRepositoryDatabase(connection);
 const createPayment = new CreatePayment(paymentRepository, orderRepository); 
-new PaymentController(httpServer, createPayment); //depende do ORDER
+new PaymentController(httpServer, createPayment); 
 
 httpServer.listen(port);
