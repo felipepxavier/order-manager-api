@@ -1,4 +1,5 @@
 import type { Knex } from "knex";
+require('dotenv').config();
 
 export const config: { [key: string]: Knex.Config } = {
   development: {  
