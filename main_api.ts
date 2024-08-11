@@ -4,6 +4,7 @@ import { CreateOrder } from "./src/application/usecase/CreateOrder";
 import { CreatePayment } from "./src/application/usecase/CreatePayment";
 import { CreateProduct } from "./src/application/usecase/CreateProduct";
 import { ExpressAdapter } from "./src/infra/http/HttpServer";
+import { GetAllOrders } from "./src/application/usecase/GetAllOrders";
 import { GetAllProductsByCategory } from "./src/application/usecase/GetAllProductsByCategory";
 import { GetClientByCpf } from "./src/application/usecase/GetClientByCpf";
 import { GetClientById } from "./src/application/usecase/GetClientById";
@@ -60,7 +61,7 @@ async function createTables() {
     // Criar tabela de pedidos
     const ordersExists = await db.schema.hasTable('orders');
     if (!ordersExists) {
-      await db.schema.createTable('orders', (table) => {
+      await db.schema.createTable('orders', (table) => { 
         table.uuid('order_id').primary();
         table.uuid('client_id').nullable().references('account_id').inTable('clients').onDelete('CASCADE');
         table.string('status').notNullable();
@@ -122,7 +123,8 @@ new ProductController(httpServer, createProduct, updateProduct, removeProduct, g
 const orderRepository = new OrderRepositoryDatabase(connection);
 const createOrder = new CreateOrder(orderRepository, productRepository, clientRepository);
 const getOrder = new GetOrder(orderRepository, productRepository, clientRepository);
-new OrderController(httpServer, createOrder, getOrder);
+const getAllOrders = new GetAllOrders(orderRepository, productRepository, clientRepository);
+new OrderController(httpServer, createOrder, getOrder, getAllOrders);
 
 const paymentRepository = new PaymentRepositoryDatabase(connection);
 const createPayment = new CreatePayment(paymentRepository, orderRepository); 

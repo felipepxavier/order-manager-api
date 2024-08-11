@@ -28,7 +28,14 @@ export class OrderRepositoryDatabase implements OrderRepository {
     }
     async getALLOrders(): Promise<Order[] | undefined> {
         const orders = await this.db<any>("orders").select("*");
-        return orders?.map((order) => Order.restore(order.order_id, order.products, order.status, order.client_id));
+        const ordersWithProducts = await Promise.all(orders.map(async (order) => {
+            const orderItemsData = await this.db("order_items").where({ order_id: order.order_id });
+            const orderProducts = orderItemsData.map((item: OrderItem) => 
+                new OrderProduct(item.order_item_id, item.product_id, item.quantity, item.price)
+            );
+            return Order.restore(order.order_id, orderProducts, order.status, order.client_id);
+        }));
+        return ordersWithProducts;
     }
     async createOrder(order: Order): Promise<{ order_id: string, status: string }> {
         const trx = await this.db.transaction();
