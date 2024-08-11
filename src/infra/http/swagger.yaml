@@ -203,6 +203,45 @@ paths:
                   summary: Quantidade do produto é 0
                   value:
                     message: "Quantity must be bigger than 0"
+    get:
+      tags:
+        - Gerenciamento de pedido
+      summary: Obter todos os pedidos
+      responses:
+        '200':
+          description: Lista de pedidos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    order_id:
+                      type: string
+                    total_price:
+                      type: number
+                    status:
+                      type: string
+                    client_name:
+                      type: string
+                    products:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          product_id:
+                            type: string
+                          quantity:
+                            type: integer
+                          name:
+                            type: string
+                          description:
+                            type: string
+                          price:
+                            type: number
+                          category:
+                            type: string
   /orders/{order_id}:
     get:
       tags:
@@ -333,7 +372,7 @@ paths:
       responses:
         '200':
           description: Produto removido com sucesso
-  /products/category/{category}:
+  /products/{category}:
     get:
       tags:
         - Gerenciamento de pedido
