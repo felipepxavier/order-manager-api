@@ -36,3 +36,8 @@ Para iniciar o projeto, você pode usar o Docker Compose para configurar e execu
 
     - **API**: http://localhost:3000
     - **Documentação Swagger**: http://localhost:3000/api-docs
+
+
+## Sobre Este Projeto
+
+Este projeto faz parte da especialização em **Arquitetura de Software** da FIAP. Desenvolvido como parte do curso, ele utiliza práticas e padrões avançados de design de software.
