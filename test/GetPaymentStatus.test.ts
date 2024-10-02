@@ -34,11 +34,40 @@ describe('GetPaymentStatus', () => {
         const payment = await createPayment.execute(paymentData);
         expect(payment.payment_id).toBeDefined();
         expect(payment.status).toBe('approved');
-
         const getPaymentStatus = new GetPaymentStatus(paymentRepository, orderRepository);
         const paymentStatus = await getPaymentStatus.execute({ order_id: orderCreated.order_id });
         
         expect(paymentStatus).toBe(payment.status);
+    })
+
+    it("should return an error if the order not found", async () => {
+        const paymentRepository = new PaymentRepositoryMemory();
+        const orderRepository = new OrderRepositoryMemory();
+        const getPaymentStatus = new GetPaymentStatus(paymentRepository, orderRepository);
+       
+        await expect(() => getPaymentStatus.execute({ order_id: '1' })).rejects.toThrow("Order not found");
+    })
+
+    it("should return an error if the payment not found", async () => {
+        const paymentRepository = new PaymentRepositoryMemory();
+        const orderRepository = new OrderRepositoryMemory();
+        const getPaymentStatus = new GetPaymentStatus(paymentRepository, orderRepository);
+       
+        const orderData = {
+            client_id: '1',
+            status: 'open',
+            products: [
+                {
+                    product_id: '1',
+                    quantity: 1,
+                    price: 100
+                }
+            ]
+        };
+
+        const order = Order.create(orderData);
+        const orderCreated = await orderRepository.createOrder(order);
+        await expect(() => getPaymentStatus.execute({ order_id: orderCreated.order_id })).rejects.toThrow("Payment not found");
     })
     
 })
