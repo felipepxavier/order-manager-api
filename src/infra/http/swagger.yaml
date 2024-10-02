@@ -457,3 +457,44 @@ paths:
                   summary: Método de pagamento não suportado
                   value:
                     message: "Payment Method not supported, only 'Pix' is allowed"
+  /payments/status/{order_id}:
+    get:
+      tags:
+        - Processamento do pagamento
+      summary: Obter status do pagamento por ID do pedido
+      parameters:
+        - in: path
+          name: order_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Status do pagamento retornado com sucesso
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                status:
+                  value: "approved"
+                  description: "O status do pagamento (e.g., approved, rejected)"
+        '422':
+          description: Erro de validação
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                orderNotFound:
+                  summary: Pedido não encontrado
+                  value:
+                    message: "Order not found"
+                paymentNotFound:
+                  summary: Pagamento não encontrado
+                  value:
+                    message: "Payment not found"
+          
