@@ -8,6 +8,7 @@ export interface PaymentRepository {
     processPayment(payment: Payment): Promise<{ payment_id: string, status: string }>;
     updateStatus(payment: Payment): Promise<Payment>;
     getPaymentById(payment_id: string): Promise<Payment | undefined>;
+    getPaymentByOrderId(order_id: string): Promise<Payment | undefined>;
 }
 
 // [Driven] Adapter
@@ -62,8 +63,13 @@ export class PaymentRepositoryDatabase implements PaymentRepository {
         if (!payment) return undefined;
         return Payment.restore(payment.payment_id, payment.order_id, payment.payment_method, payment.amount, payment.status);
     }
-}
 
+    async getPaymentByOrderId(order_id: string): Promise<Payment | undefined> {
+        const payment = await this.db<any>("payments").where({ order_id }).select("*").first();
+        if (!payment) return undefined;
+        return Payment.restore(payment.payment_id, payment.order_id, payment.payment_method, payment.amount, payment.status);
+    }
+}
 
 export class PaymentRepositoryMemory implements PaymentRepository {
     private payments: Payment[] = [];
@@ -85,4 +91,9 @@ export class PaymentRepositoryMemory implements PaymentRepository {
     async getPaymentById(payment_id: string): Promise<Payment | undefined> {
         return this.payments.find(p => p.payment_id === payment_id);
     }
+
+    async getPaymentByOrderId(order_id: string): Promise<Payment | undefined> {
+        return this.payments.find(p => p.order_id === order_id);
+    }
+  
 }
