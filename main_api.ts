@@ -9,6 +9,7 @@ import { GetAllProductsByCategory } from "./src/application/usecase/GetAllProduc
 import { GetClientByCpf } from "./src/application/usecase/GetClientByCpf";
 import { GetClientById } from "./src/application/usecase/GetClientById";
 import GetOrder from "./src/application/usecase/GetOrder";
+import { GetPaymentStatus } from "./src/application/usecase/GetPaymentStatus";
 import { KnexAdapter } from "./src/infra/database/QueryBuilderDatabaseConnection";
 import OrderController from "./src/infra/http/OrderController";
 import { OrderRepositoryDatabase } from "./src/infra/repository/OrderRepository";
@@ -128,6 +129,7 @@ new OrderController(httpServer, createOrder, getOrder, getAllOrders);
 
 const paymentRepository = new PaymentRepositoryDatabase(connection);
 const createPayment = new CreatePayment(paymentRepository, orderRepository); 
-new PaymentController(httpServer, createPayment); 
+const getPaymentStatus = new GetPaymentStatus(paymentRepository, orderRepository);
+new PaymentController(httpServer, createPayment, getPaymentStatus); 
 
 httpServer.listen(port);
