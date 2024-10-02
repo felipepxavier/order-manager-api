@@ -246,5 +246,61 @@ describe('Payment', () => {
     expect(responsePayment.status).toBe(422);
     expect(responsePayment.data.message).toBe("Order not found");
   });
+
+  it("should get payment status correctly", async () => {
+    const client = {
+      name: "John Test",
+      email: `john.doe${Math.random()}@gmail.com`,
+      cpf: "87748248800",
+    };
+    const responseClient = await axios.post(
+      "http://localhost:3000/clients",
+      client,
+    );
+    const client_id = responseClient.data.account_id;
+
+    const product = {
+      name: "Product Test",
+      description: "Product Test Description",
+      price: 10.0,
+      category: "Test",
+    };
+    const responseProduct = await axios.post(
+      "http://localhost:3000/products",
+      product,
+    );
+    const product_id = responseProduct.data.product_id;
+
+    const order = {
+      client_id,
+      products: [
+        {
+          product_id,
+          quantity: 2
+        },
+      ],
+    };
+    const responseOrder = await axios.post(
+      "http://localhost:3000/orders",
+      order,
+    );
+    const order_id = responseOrder.data.order_id;
+
+    const payment = {
+      order_id,
+      payment_method: "Pix",
+    };
+    const responsePayment = await axios.post(
+      "http://localhost:3000/payments",
+      payment,
+    );
+    const outputPayment = responsePayment.data;
+
+    const responsePaymentStatus = await axios.get(
+      `http://localhost:3000/payments/status/${order_id}`,
+    );
+    const outputPaymentStatus = responsePaymentStatus.data;
+    expect(outputPaymentStatus).toBe(outputPayment.status);
+  });
 })
 
