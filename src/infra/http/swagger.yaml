@@ -295,7 +295,52 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Order not found"  
+                    example: "Order not found" 
+
+  /orders/status/{order_id}:
+    put:
+      tags:
+        - Gerenciamento de pedido
+      summary: Atualizar status do pedido
+      parameters:
+        - in: path
+          name: order_id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+              required:
+                - status
+      responses:
+        '200':
+          description: Status do pedido atualizado com sucesso
+        '422':
+          description: Erro de validação
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Order not found or Invalid status"
+              examples:
+                orderNotFound:
+                  summary: Pedido não encontrado
+                  value:
+                    message: "Order not found"
+                invalidStatus:
+                  summary: Status inválido
+                  value:
+                    message: "Invalid status"
   /products:
     post:
       tags:
