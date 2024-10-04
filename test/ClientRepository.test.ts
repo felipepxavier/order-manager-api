@@ -22,9 +22,9 @@ it("should create a record in the customer table and query by id", async () => {
 it("should create a record in the customer table and consult by email", async () => {
   const client = Client.create("John Test", `john.doe${Math.random()}@gmail.com`, "87748248800");
   const connection = new KnexAdapter();
-  const accountDAO = new ClientRepositoryDatabase(connection);
-  const outputClient = await accountDAO.createClient(client);
-  const savedAccountByEmail = await accountDAO.getClientByEmail(
+  const accountRepository = new ClientRepositoryDatabase(connection);
+  const outputClient = await accountRepository.createClient(client);
+  const savedAccountByEmail = await accountRepository.getClientByEmail(
     outputClient?.getEmail(),
   );
 
