@@ -19,6 +19,7 @@ import ProductController from "./src/infra/http/ProductController";
 import { ProductRepositoryDatabase } from "./src/infra/repository/ProductRepository";
 import { RegisterClient } from "./src/application/usecase/RegisterClient";
 import { RemoveProduct } from "./src/application/usecase/RemoveProduct";
+import { UpdateOrderStatus } from "./src/application/usecase/UpdateOrderStatus";
 import { UpdateProduct } from "./src/application/usecase/UpdateProduct";
 import { config } from "./src/infra/database/config";
 import dotenv from 'dotenv';
@@ -125,7 +126,8 @@ const orderRepository = new OrderRepositoryDatabase(connection);
 const createOrder = new CreateOrder(orderRepository, productRepository, clientRepository);
 const getOrder = new GetOrder(orderRepository, productRepository, clientRepository);
 const getAllOrders = new GetAllOrders(orderRepository, productRepository, clientRepository);
-new OrderController(httpServer, createOrder, getOrder, getAllOrders);
+const updateOrderStatus = new UpdateOrderStatus(orderRepository);
+new OrderController(httpServer, createOrder, getOrder, getAllOrders, updateOrderStatus);
 
 const paymentRepository = new PaymentRepositoryDatabase(connection);
 const createPayment = new CreatePayment(paymentRepository, orderRepository); 

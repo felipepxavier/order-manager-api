@@ -48,7 +48,6 @@ type Input = {
   products: {
       product_id: string;
       quantity: number;
-      //price: number;
   }[];
 };
 
