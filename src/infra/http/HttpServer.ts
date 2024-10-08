@@ -18,7 +18,7 @@ export class ExpressAdapter implements HttpServer {
         this.app.use(express.json());
 
         const swaggerDocument = YAML.load(path.resolve(__dirname, './swagger.yaml'));
-        swaggerDocument.servers = [{ url: `http://localhost:${process.env.API_PORT}` }];
+        swaggerDocument.servers = [{ url: `${process.env.API_URL}:${process.env.API_PORT}` }];
         this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
     }
 
@@ -36,7 +36,7 @@ export class ExpressAdapter implements HttpServer {
 
     listen(port: number): void {
         this.app.listen(port);
-        console.log(`Server is running at http://localhost:${port}`);
-        console.log(`Swagger API documentation is available at: http://localhost:${port}/api-docs`);
+        console.log(`Server is running at ${process.env.API_URL}:${port}`);
+        console.log(`Swagger API documentation is available at: ${process.env.API_URL}:${port}/api-docs`);
     }
 }

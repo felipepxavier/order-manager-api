@@ -11,7 +11,7 @@ export default class GetOrder {
         if (!order?.order_id) {
             throw new Error("Order not found");
         }
-        const orderRestored = Order.restore(order.order_id, order.products, order.getStatus(), order.client_id);
+        const orderRestored = Order.restore(order.order_id, order.products, order.getStatus(), order.created_at, order.client_id);
 
         const products = await Promise.all(orderRestored.products.map(async product => {
             const productData = await this.productRepository.getProductById(product.product_id);
@@ -35,7 +35,8 @@ export default class GetOrder {
             total_price: orderRestored.calculateTotalPrice(),
             status: orderRestored.getStatus(),
             client_name: client?.getName(),
-            products
+            products,
+            created_at: orderRestored.created_at
         };
     }
 }
@@ -57,4 +58,5 @@ type Output = {
     }[];
     status: string;
     client_name: string | undefined;
+    created_at: string;
 };

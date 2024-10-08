@@ -4,7 +4,7 @@ import { ProductRepositoryMemory } from "../src/infra/repository/ProductReposito
 
 describe('GetAllProductsByCategory.test', () => {
     it('should get all products by category correctly', async () => {
-        const productRepository = new ProductRepositoryMemory();
+        const productRepository = new ProductRepositoryMemory(); 
         jest.spyOn(productRepository, 'getALLProductsByCategory')
         const createProduct = new CreateProduct(productRepository);
         const getAllProductsByCategory = new GetAllProductsByCategory(productRepository);

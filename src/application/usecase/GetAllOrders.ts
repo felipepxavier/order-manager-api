@@ -2,6 +2,12 @@ import { ClientRepository } from "../../infra/repository/ClientRepository";
 import { OrderRepository } from "../../infra/repository/OrderRepository";
 import { ProductRepository } from "../../infra/repository/ProductRepository";
 
+enum OrderStatusPriority {
+  ready = 1,        
+  preparing = 2,   
+  received = 3     
+}
+
 export class GetAllOrders {
   constructor(readonly orderRepository: OrderRepository, readonly productRepository: ProductRepository, readonly clientRepository: ClientRepository) {}
 
@@ -10,8 +16,10 @@ export class GetAllOrders {
     if (!orders) {
       return [];
     }
+
+    const filteredOrders = orders.filter((order) => order.getStatus() !== "finished");
     const ordersWithData = await Promise.all(
-      orders.map(async (orderRestored) => {
+      filteredOrders.map(async (orderRestored) => {
         const products = await Promise.all(
           orderRestored.products.map(async (product) => {
             const productData = await this.productRepository.getProductById(product.product_id);
@@ -39,12 +47,17 @@ export class GetAllOrders {
           total_price: orderRestored.calculateTotalPrice(),
           status: orderRestored.getStatus(),
           client_name: clientName,
-          products
+          products,
+          created_at: orderRestored.created_at
         };
       })
     );
 
-    return ordersWithData;
+    const ordersSorted = ordersWithData.sort((a, b) => {
+      return OrderStatusPriority[a.status as keyof typeof OrderStatusPriority] - OrderStatusPriority[b.status as keyof typeof OrderStatusPriority];
+    });
+
+    return ordersSorted;
   }
 }
 
@@ -61,4 +74,5 @@ type Output = {
     }[];
     status: string;
     client_name: string | undefined;
+    created_at: string;
 }[]

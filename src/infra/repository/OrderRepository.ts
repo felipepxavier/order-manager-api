@@ -2,6 +2,7 @@ import { Knex } from "knex";
 import Order from "../../domain/entity/Order";
 import OrderProduct from "../../domain/vo/OrderProduct";
 import QueryBuilderDatabaseConnection from "../database/QueryBuilderDatabaseConnection";
+import { create } from "ts-node";
 
 type OrderItem = {
     order_id: string;
@@ -33,17 +34,19 @@ export class OrderRepositoryDatabase implements OrderRepository {
             const orderProducts = orderItemsData.map((item: OrderItem) => 
                 new OrderProduct(item.order_item_id, item.product_id, item.quantity, item.price)
             );
-            return Order.restore(order.order_id, orderProducts, order.status, order.client_id);
+            return Order.restore(order.order_id, orderProducts, order.status, order.created_at, order.client_id);
         }));
         return ordersWithProducts;
     }
     async createOrder(order: Order): Promise<{ order_id: string, status: string }> {
         const trx = await this.db.transaction();
+       
         try {
             const [insertedOrder] = await trx("orders").insert({
                 order_id: order.order_id,
                 status: order.getStatus(),
-                client_id: order.client_id 
+                client_id: order.client_id,
+                created_at: order.created_at
             }).returning("*");
 
             const orderItems = order.products.map((item) => ({
@@ -98,7 +101,7 @@ export class OrderRepositoryDatabase implements OrderRepository {
         const orderProducts = orderItemsData.map((item: OrderItem) => 
             new OrderProduct(item.order_item_id, item.product_id, item.quantity, item.price));
 
-        return Order.restore(order.order_id, orderProducts, order.status, order.client_id); 
+        return Order.restore(order.order_id, orderProducts, order.status, order.created_at, order.client_id); 
     }
 }
 

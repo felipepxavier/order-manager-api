@@ -1,5 +1,8 @@
 import axios from "axios";
+import dotenv from 'dotenv';
 import { randomUUID } from "crypto";
+
+dotenv.config();
 
 axios.defaults.validateStatus = function () {
   return true;
@@ -13,14 +16,14 @@ describe("RegisterClient", () => {
       cpf: "87748248800",
     };
     const responseClient = await axios.post(
-      "http://localhost:3000/clients",
+      `${process.env.API_url}:${process.env.API_PORT}/clients`,
       input,
     );
     const outputClient = responseClient.data;
     expect(outputClient.account_id).toBeDefined();
 
     const responseGetClient = await axios.get(
-      `http://localhost:3000/clients/${outputClient.account_id}`,
+      `${process.env.API_URL}:3000/clients/${outputClient.account_id}`,
     );
     const outputGetClient = responseGetClient.data;
 
@@ -35,7 +38,7 @@ describe("RegisterClient", () => {
       cpf: "87748248800",
     };
     const responseClient = await axios.post(
-      "http://localhost:3000/clients",
+      `${process.env.API_URL}:3000/clients`,
       input,
     );
 
@@ -47,14 +50,14 @@ describe("RegisterClient", () => {
 describe("getClient", () => {
   it("should return an error if the client by id not found", async () => {
     const responseClient = await axios.get(
-      `http://localhost:3000/clients/${randomUUID()}`,
+      `${process.env.API_URL}:3000/clients/${randomUUID()}`,
     );
     expect(responseClient.status).toBe(422);
     expect(responseClient.data.message).toBe("Client not found");
   });
   it("should return an error if the client by cpf not found", async () => {
     const responseClient = await axios.get(
-      `http://localhost:3000/clients/cpf/${randomUUID()}`,
+      `${process.env.API_URL}:3000/clients/cpf/${randomUUID()}`,
     );
     expect(responseClient.status).toBe(422);
     expect(responseClient.data.message).toBe("Client not found");
@@ -69,7 +72,7 @@ describe('Order', () => {
       cpf: "87748248800",
     };
     const responseClient = await axios.post(
-      "http://localhost:3000/clients",
+      `${process.env.API_URL}:3000/clients`,
       client,
     );
     const client_id = responseClient.data.account_id;
@@ -81,7 +84,7 @@ describe('Order', () => {
       category: "Test",
     };
     const responseProduct = await axios.post(
-      "http://localhost:3000/products",
+      `${process.env.API_URL}:3000/products`,
       product,
     );
     const product_id = responseProduct.data.product_id;
@@ -96,7 +99,7 @@ describe('Order', () => {
       ],
     };
     const responseOrder = await axios.post(
-      "http://localhost:3000/orders",
+      `${process.env.API_URL}:3000/orders`,
       order,
     );
     const outputOrder = responseOrder.data;
@@ -111,7 +114,7 @@ describe('Order', () => {
       category: "Test",
     };
     const responseProduct = await axios.post(
-      "http://localhost:3000/products",
+      `${process.env.API_URL}:3000/products`,
       product,
     );
     const product_id = responseProduct.data.product_id;
@@ -125,7 +128,7 @@ describe('Order', () => {
       ],
     };
     const responseOrder = await axios.post(
-      "http://localhost:3000/orders",
+      `${process.env.API_URL}:3000/orders`,
       order,
     );
     const outputOrder = responseOrder.data;
@@ -143,7 +146,7 @@ describe('Order', () => {
       ],
     };
     const responseOrder = await axios.post(
-      "http://localhost:3000/orders",
+      `${process.env.API_URL}:3000/orders`,
       order,
     );
     expect(responseOrder.status).toBe(422);
@@ -157,7 +160,7 @@ describe('Order', () => {
       cpf: "87748248800",
     };
     const responseClient = await axios.post(
-      "http://localhost:3000/clients",
+      `${process.env.API_URL}:3000/clients`,
       client,
     );
     const client_id = responseClient.data.account_id;
@@ -172,7 +175,7 @@ describe('Order', () => {
       ],
     };
     const responseOrder = await axios.post(
-      "http://localhost:3000/orders",
+    `${process.env.API_URL}:3000/orders`,
       order,
     );
     expect(responseOrder.status).toBe(422);
@@ -186,7 +189,7 @@ describe('Order', () => {
       cpf: "87748248800",
     };
     const responseClient = await axios.post(
-      "http://localhost:3000/clients",
+      `${process.env.API_URL}:3000/clients`,
       client,
     );
     const client_id = responseClient.data.account_id;
@@ -198,7 +201,7 @@ describe('Order', () => {
       category: "Test",
     };
     const responseProduct = await axios.post(
-      "http://localhost:3000/products",
+      `${process.env.API_URL}:3000/products`,
       product,
     );
     const product_id = responseProduct.data.product_id;
@@ -213,7 +216,7 @@ describe('Order', () => {
       ],
     };
     const responseOrder = await axios.post(
-      "http://localhost:3000/orders",
+      `${process.env.API_URL}:3000/orders`,
       order,
     );
     const order_id = responseOrder.data.order_id;
@@ -224,12 +227,12 @@ describe('Order', () => {
     };
     
     await axios.post(
-      "http://localhost:3000/payments",
+      `${process.env.API_URL}:3000/payments`,
       payment,
     );
 
     const responseUpdateOrderStatus = await axios.put( 
-      `http://localhost:3000/orders/status/${order_id}`,
+      `${process.env.API_URL}:3000/orders/status/${order_id}`,
       { status: "preparing" },
     );
     const outputUpdateOrderStatus = responseUpdateOrderStatus.data;
@@ -239,18 +242,20 @@ describe('Order', () => {
 
 
 describe('Payment', () => {
+  
   it("should create a payment correctly [approved]", async () => {
-    const client = {
+    const input = {
       name: "John Test",
       email: `john.doe${Math.random()}@gmail.com`,
       cpf: "87748248800",
     };
+   
     const responseClient = await axios.post(
-      "http://localhost:3000/clients",
-      client,
+      `${process.env.API_url}:${process.env.API_PORT}/clients`,
+      input,
     );
+   
     const client_id = responseClient.data.account_id;
-
     const product = {
       name: "Product Test",
       description: "Product Test Description",
@@ -258,7 +263,7 @@ describe('Payment', () => {
       category: "Test",
     };
     const responseProduct = await axios.post(
-      "http://localhost:3000/products",
+      `${process.env.API_URL}:3000/products`,
       product,
     );
     const product_id = responseProduct.data.product_id;
@@ -273,7 +278,7 @@ describe('Payment', () => {
       ],
     };
     const responseOrder = await axios.post(
-      "http://localhost:3000/orders",
+      `${process.env.API_URL}:3000/orders`,
       order,
     );
     const order_id = responseOrder.data.order_id;
@@ -283,7 +288,7 @@ describe('Payment', () => {
       payment_method: "Pix",
     };
     const responsePayment = await axios.post(
-      "http://localhost:3000/payments",
+      `${process.env.API_URL}:3000/payments`,
       payment,
     );
     const outputPayment = responsePayment.data;
@@ -297,7 +302,7 @@ describe('Payment', () => {
       payment_method: "credit",
     };
     const responsePayment = await axios.post(
-      "http://localhost:3000/payments",
+      `${process.env.API_URL}:3000/payments`,
       payment,
     );
     expect(responsePayment.status).toBe(422);
@@ -311,7 +316,7 @@ describe('Payment', () => {
       cpf: "87748248800",
     };
     const responseClient = await axios.post(
-      "http://localhost:3000/clients",
+      `${process.env.API_URL}:${process.env.API_PORT}/clients`,
       client,
     );
     const client_id = responseClient.data.account_id;
@@ -323,7 +328,7 @@ describe('Payment', () => {
       category: "Test",
     };
     const responseProduct = await axios.post(
-      "http://localhost:3000/products",
+      `${process.env.API_URL}:${process.env.API_PORT}/products`,
       product,
     );
     const product_id = responseProduct.data.product_id;
@@ -338,7 +343,7 @@ describe('Payment', () => {
       ],
     };
     const responseOrder = await axios.post(
-      "http://localhost:3000/orders",
+      `${process.env.API_URL}:${process.env.API_PORT}/orders`,
       order,
     );
     const order_id = responseOrder.data.order_id;
@@ -348,13 +353,13 @@ describe('Payment', () => {
       payment_method: "Pix",
     };
     const responsePayment = await axios.post(
-      "http://localhost:3000/payments",
+      `${process.env.API_URL}:${process.env.API_PORT}/payments`,
       payment,
     );
     const outputPayment = responsePayment.data;
 
     const responsePaymentStatus = await axios.get(
-      `http://localhost:3000/payments/status/${order_id}`,
+      `${process.env.API_URL}:${process.env.API_PORT}/payments/status/${order_id}`,
     );
     const outputPaymentStatus = responsePaymentStatus.data;
     expect(outputPaymentStatus).toBe(outputPayment.status);

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start": "ts-node main_api.ts",
+    "start": "cross-env DB_HOST=127.0.0.1 ts-node main_api.ts",
     "test": "cross-env DB_HOST=127.0.0.1 jest",
     "migrate": "knex migrate:latest --knexfile knexfile.ts",
     "rollback": "knex migrate:rollback --knexfile knexfile.ts",

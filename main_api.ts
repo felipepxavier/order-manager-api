@@ -33,6 +33,7 @@ const port = Number(process.env.API_PORT || 3000);
 const db = knex(config[environment]);
 
 async function createTables() {
+
     // Criar tabela de clientes
     const clientsExists = await db.schema.hasTable('clients');
     if (!clientsExists) {
@@ -63,11 +64,11 @@ async function createTables() {
     // Criar tabela de pedidos
     const ordersExists = await db.schema.hasTable('orders');
     if (!ordersExists) {
-      await db.schema.createTable('orders', (table) => { 
+      await db.schema.createTable('orders', (table) => {
         table.uuid('order_id').primary();
         table.uuid('client_id').nullable().references('account_id').inTable('clients').onDelete('CASCADE');
         table.string('status').notNullable();
-        table.timestamp('created_at').defaultTo(db.fn.now());
+        table.timestamp('created_at').notNullable();
       });
       console.log("Tabela 'orders' criada");
     }

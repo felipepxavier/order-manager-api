@@ -16,6 +16,7 @@ export default class Order {
         readonly order_id: string,
         readonly products: OrderProduct[],
         status: string,
+        readonly created_at: string,
         readonly client_id?: string,
     ) {
         this.status = OrderStatusFactory.create(this, status);
@@ -31,7 +32,7 @@ export default class Order {
             const order_item_id = randomUUID()
            return  new OrderProduct(order_item_id, product.product_id, product.quantity, product.price)
         });
-        return new Order(order_id, orderProducts, status, client_id); 
+        return new Order(order_id, orderProducts, status, new Date().toISOString(), client_id); 
     }
 
     //static factory method
@@ -39,9 +40,11 @@ export default class Order {
         order_id: string,
         products: OrderProduct[],
         status: string,
-        client_id?: string
+        created_at: string,
+        client_id?: string,
+        
     ) {
-        return new Order(order_id, products, status, client_id);
+        return new Order(order_id, products, status, created_at, client_id);
     }
 
     calculateTotalPrice() {
