@@ -33,7 +33,6 @@ describe('GetOrder.test.ts', () => {
         ]
         
         const outputCreateOrder = await createOrder.execute({ client_id: outputClient!.account_id, products: orderProdcuts })
-
         const getOrder = new GetOrder(orderRepository, productRepository, clientRepository);
         const order = await getOrder.execute({ order_id: outputCreateOrder.order_id });
        

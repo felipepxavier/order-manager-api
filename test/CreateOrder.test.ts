@@ -39,6 +39,7 @@ describe('CreateOrder.test.ts', () => {
 
         const getOrderById = new GetOrder(orderRepository, productRepository, clientRepository)
         const outputGetOrderById = await getOrderById.execute({ order_id: outputCreateOrder.order_id })
+
         expect(outputCreateOrder?.order_id).toBe(outputGetOrderById?.order_id);
         expect(outputGetOrderById?.products.length).toBe(orderProdcuts.length)
         expect(outputGetOrderById?.status).toBe('pending')
