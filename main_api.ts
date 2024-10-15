@@ -30,10 +30,25 @@ dotenv.config();
 const environment = process.env.NODE_ENV || "development";
 const port = Number(process.env.API_PORT || 3000);
 
-const db = knex(config[environment]);
+const defaultConfig = config[environment]
+const defaultConfigPostgres = {
+  ...defaultConfig,
+  connection: typeof defaultConfig.connection === 'object' ? { ...defaultConfig.connection, database: 'postgres' } : defaultConfig.connection
+};
+
+const dbPostgres = knex(defaultConfigPostgres);
+async function createDatabase() {
+  const databases = await dbPostgres.raw("SELECT datname FROM pg_database WHERE datname = 'ifood-db';");
+  if (databases.rows.length === 0) {
+      await dbPostgres.raw('CREATE DATABASE "ifood-db";');
+      console.log("Banco de dados 'ifood-db' criado.");
+  } else {
+      console.log("Banco de dados 'ifood-db' já existe.");
+  }
+}
 
 async function createTables() {
-
+  const db = knex(defaultConfig);
     // Criar tabela de clientes
     const clientsExists = await db.schema.hasTable('clients');
     if (!clientsExists) {
@@ -100,11 +115,11 @@ async function createTables() {
       console.log("Tabela 'payments' criada");
     }
 }
-  
-  createTables().catch((err) => {
-    console.error('Erro ao criar tabelas:', err);
+
+createDatabase().then(() => createTables()).catch((err) => {
+    console.error('Erro ao criar banco de dados ou tabelas:', err);
   }).finally(() => {
-    db.destroy();
+    dbPostgres.destroy();
   });
 
 const httpServer = new ExpressAdapter();

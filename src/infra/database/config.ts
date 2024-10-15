@@ -10,7 +10,8 @@ export const config: { [key: string]: Knex.Config } = {
       user: process.env.DB_USER,
       database: process.env.DB_NAME,
       password: process.env.DB_PASSWORD,
-    },
+      ssl: { rejectUnauthorized: false }
+    }
   },
   test: {
     client: process.env.DB_CLIENT,
