@@ -38,6 +38,15 @@ Para iniciar o projeto, você pode usar o Docker Compose para configurar e execu
     - **Documentação Swagger**: http://localhost:3000/api-docs
 
 
+## Evolução de arquitetura AWS
+
+<p align="center">
+  <img src="./images/aws-architecture-v1.svg" alt="V1">
+  <br>
+  <em>Figura 1: Arquitetura AWS v1</em>
+</p>
+
+
 ## Sobre Este Projeto
 
 Este projeto faz parte da especialização em **Arquitetura de Software** da FIAP. Desenvolvido como parte do curso, ele utiliza práticas e padrões avançados de design de software.
