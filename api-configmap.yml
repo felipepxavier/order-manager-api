@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-config
+data:
+  DB_HOST: ifood-db.cdmeg0icuylz.us-east-1.rds.amazonaws.com
+  DB_NAME: "ifood-db"
+  DB_PORT: "5432"
+  DB_CLIENT: pg
+  NODE_ENV: "development"
