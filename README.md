@@ -1,52 +1,17 @@
-# order-manager-api
+# Repositórios
 
-## Descrição do Projeto
+## 1. **API Rest** - `order-manager-api`
 
-Esta API é um projeto desenvolvido utilizando as melhores práticas de desenvolvimento de software, com foco em entregar uma solução de alta qualidade. O projeto adota a abordagem de **Domain-Driven Design (DDD)** para modelagem do domínio e **Arquitetura Hexagonal** para garantir um desacoplamento efetivo entre o núcleo da aplicação e suas interfaces externas.
-
-Além disso, emprega-se a **Clean Architecture** para manter um código limpo e organizado, facilitando a manutenção e evolução do sistema. O design inclui a utilização de padrões de projeto como o **State Design Pattern** e o **Static Factory Method**, entre outros, para promover uma estrutura de código robusta e eficiente.
-
-Estas práticas e padrões são aplicados para garantir a criação de uma API bem projetada, que é extensível e adaptável às necessidades futuras.
-
-## Event-Storming e Estrutura do Projeto
-
-Este projeto foi fundamentado no event-storming realizado na plataforma Lucid. Esse processo permitiu mapear e estruturar eventos de domínio cruciais, bem como identificar agregados e contextos delimitados, que são essenciais para a modelagem e organização da aplicação. 
-
-Confira o diagrama detalhado em: [Lucidchart Event-Storming](https://lucid.app/lucidchart/edbd91cc-478d-4b5e-a72f-1013f450f952/view).
-
-## Iniciando o Projeto
-
-Para iniciar o projeto, você pode usar o Docker Compose para configurar e executar os serviços necessários. Siga estas etapas:
-
-1. **Certifique-se de que o Docker e o Docker Compose estão instalados em seu sistema.**
-
-2. **Clone o repositório do projeto:**
-   ```bash
-   git clone https://github.com/felipepxavier/order-manager-api.git
-   cd order-manager-api
-   ```
-
-3. **Inicie os serviços** do projeto executando o comando Docker Compose:
-
-    ```bash
-    docker-compose up
-    ```
-
-4. **Acesse a API e a documentação** no seu navegador:
-
-    - **API**: http://localhost:3000
-    - **Documentação Swagger**: http://localhost:3000/api-docs
+Este repositório contém a implementação de uma API RESTful para o gerenciamento de pedidos, desenvolvida utilizando as melhores práticas de design de software, incluindo **Domain-Driven Design (DDD)**, **Arquitetura Hexagonal**, **Clean Architecture** e padrões de projeto como **State Design Pattern**. A API está configurada para ser executada com Docker Compose.
 
 
-## Evolução de arquitetura AWS
+## 2. **Kubernetes Infrastructure as Code (K8s IaC)** - `eks-cluster-terraform`
 
-<p align="center">
-  <img src="./images/aws-architecture-v1.svg" alt="V1">
-  <br>
-  <em>Figura 1: Arquitetura AWS v1</em>
-</p>
+Este repositório contém a infraestrutura necessária para criar um cluster Kubernetes no Amazon EKS utilizando o Terraform. Ele automatiza o processo de provisionamento e configuração da infraestrutura na AWS, com arquivos separados para a configuração do cluster, nós e rede.
 
+- **Estrutura**: Contém arquivos `.tf` para criação do cluster EKS, VPC e configuração dos nós.
+- **Instruções de execução**: Execute o Terraform para inicializar, aplicar e destruir a infraestrutura.
 
-## Sobre Este Projeto
+---
 
-Este projeto faz parte da especialização em **Arquitetura de Software** da FIAP. Desenvolvido como parte do curso, ele utiliza práticas e padrões avançados de design de software.
+Cada repositório foca em uma parte do projeto.
