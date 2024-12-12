@@ -1,5 +1,5 @@
 resource "aws_vpc" "order_manager_vpc" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block = var.vpc_cidr_block
 
   tags = {
     Name = "${var.prefix}_vpc"
