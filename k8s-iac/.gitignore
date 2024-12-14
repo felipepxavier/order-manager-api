@@ -14,6 +14,7 @@ npm-debug.log
 .DS_Store
 *.hcl
 tf_sa_key
+kubeconfig
 
 # Local .terraform directories
 **/.terraform/*
