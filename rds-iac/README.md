@@ -6,7 +6,7 @@ Este repositório contém a configuração do Terraform para criar uma instânci
 
 ### 1. `aws_db_subnet_group`
 - Cria um grupo de sub-redes (subnet group) dentro de uma VPC para ser utilizado por uma instância RDS.
-- As sub-redes privadas são passadas como variáveis de entrada.
+- As sub-redes privadas são recuperadas através do datasource da AWS.
 
 ### 2. `aws_db_instance`
 - Cria uma instância RDS com configurações personalizáveis, como o nome do banco de dados, classe da instância, tipo de banco de dados e credenciais de acesso.

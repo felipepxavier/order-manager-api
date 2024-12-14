@@ -6,6 +6,5 @@ variable "instance_class" {}
 variable "db_password" {}
 variable "engine" {}
 variable "engine_version" {}
-variable "private_subnet_ids" {}
 
 
