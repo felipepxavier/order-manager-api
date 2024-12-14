@@ -12,7 +12,7 @@ Este repositório contém a infraestrutura necessária para criar um cluster Kub
 - **Estrutura**: Contém arquivos `.tf` para criação do cluster EKS, VPC e configuração dos nós.
 - **Instruções de execução**: Execute o Terraform para inicializar, aplicar e destruir a infraestrutura.
 
-## 3. **RDS Infrastructure as Code**  (`rds-iac`)
+## 3. **Database Infrastructure as Code**  (`rds-iac`)
 
 Este repositório contém a configuração do Terraform para criar uma instância RDS e um grupo de sub-redes (subnet group) na AWS. A configuração cria um grupo de sub-redes privadas e uma instância de banco de dados dentro desse grupo de sub-redes.
 
