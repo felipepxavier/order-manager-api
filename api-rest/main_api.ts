@@ -38,12 +38,12 @@ const defaultConfigPostgres = {
 
 const dbPostgres = knex(defaultConfigPostgres);
 async function createDatabase() {
-  const databases = await dbPostgres.raw("SELECT datname FROM pg_database WHERE datname = 'ifood-db';");
+  const databases = await dbPostgres.raw("SELECT datname FROM pg_database WHERE datname = 'order_manager_db';");
   if (databases.rows.length === 0) {
-      await dbPostgres.raw('CREATE DATABASE "ifood-db";');
-      console.log("Banco de dados 'ifood-db' criado.");
+      await dbPostgres.raw('CREATE DATABASE "order_manager_db";');
+      console.log("Banco de dados order_manager_db' criado.");
   } else {
-      console.log("Banco de dados 'ifood-db' já existe.");
+      console.log("Banco de dados 'order_manager_db' já existe.");
   }
 }
 
