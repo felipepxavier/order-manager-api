@@ -41,7 +41,6 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_role_AmazonEKSClusterPoli
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
 }
 
-
 resource "aws_cloudwatch_log_group" "cluster_log" {
   name              = "/aws/eks/${var.cluster_name}/cluster"
   retention_in_days = var.retention_log_days
@@ -105,7 +104,8 @@ resource "aws_eks_node_group" "eks_cluster_node_1" {
   node_group_name = "eks_cluster_node_1"
   node_role_arn   = aws_iam_role.eks_cluster_node_role.arn
   subnet_ids      = var.private_subnet_ids
-  instance_types  = ["t3.micro"]
+  instance_types  = ["t3.small"]
+
 
   scaling_config {
     desired_size = var.desired_size
