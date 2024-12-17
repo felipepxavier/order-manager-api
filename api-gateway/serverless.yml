@@ -1,0 +1,112 @@
+org: felipepxavier
+app: api-gateway
+service: api-gateway
+
+frameworkVersion: "4"
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  environment:
+    API_BASE_URL: ${env:API_BASE_URL}
+    COGNITO_USER_POOL_ID: !Ref cognitoUserPool
+    COGNITO_APP_CLIENT_ID: !Ref cognitoUserPoolClient
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - lambda:InvokeFunction
+      Resource: "*"
+    - Effect: Allow
+      Action:
+        - cognito-idp:AdminGetUser
+        - cognito-idp:AdminCreateUser
+        - cognito-idp:InitiateAuth
+      Resource: "*"
+
+  apiGateway:
+    minimumCompressionSize: 1024
+    usagePlan:
+      quota:
+        limit: 10000           # Limite mensal de requisições
+        offset: 0
+        period: MONTH
+      throttle:
+        burstLimit: 200        # Limite global de requisições simultâneas
+        rateLimit: 50          # Limite global de requisições por segundo
+  httpApi:
+    cors: true
+    authorizers:
+      customAuthorizer:
+        type: request
+        functionName: authorizerFn
+
+functions:
+
+  auth:
+    handler: src/authenticate.handler
+    events:
+      - httpApi:
+          path: /auth
+          method: POST
+
+  proxy:
+    handler: src/proxy.handler
+    events:
+      - httpApi:
+          path: "/{proxy+}"
+          method: ANY
+          authorizer: 
+            name: customAuthorizer
+
+  authorizerFn:
+    handler: src/authorizer.handler
+
+resources:
+  Resources:
+    cognitoUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: "ClienteUserPool"
+        AutoVerifiedAttributes:
+          - email
+        MfaConfiguration: "OFF"
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 8
+            RequireLowercase: true
+            RequireNumbers: true
+            RequireSymbols: false
+            RequireUppercase: true
+
+    cognitoUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: "ClienteAppClient"
+        UserPoolId: !Ref cognitoUserPool
+        GenerateSecret: false
+        ExplicitAuthFlows:
+          - ALLOW_USER_PASSWORD_AUTH
+          - ALLOW_REFRESH_TOKEN_AUTH
+
+    cognitoIdentityPool:
+      Type: AWS::Cognito::IdentityPool
+      Properties:
+        IdentityPoolName: "ClienteIdentityPool"
+        AllowUnauthenticatedIdentities: false
+        CognitoIdentityProviders:
+          - ClientId: !Ref cognitoUserPoolClient
+            ProviderName: !Sub "cognito-idp.${AWS::Region}.amazonaws.com/${cognitoUserPool}"
+  
+  Outputs:
+    UserPoolId:
+      Value: !Ref cognitoUserPool
+      Export:
+        Name: ${self:service}-UserPoolId
+    UserPoolClientId:
+      Value: !Ref cognitoUserPoolClient
+      Export:
+        Name: ${self:service}-UserPoolClientId
+
+plugins:
+  - serverless-offline
