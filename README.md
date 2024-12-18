@@ -30,3 +30,19 @@ Este repositório contém a implementação de uma API Gateway Serverless na AWS
 ---
 
 Cada repositório foca em uma parte do projeto e pode ser utilizado de forma independente para gerenciar diferentes aspectos da infraestrutura e funcionalidade do sistema.
+
+
+## Evolução de arquitetura AWS
+
+<p align="center">
+  <img src="./images/aws-architecture-v1.svg" alt="V1">
+  <br>
+  <em>Figura 1: Arquitetura AWS v1</em>
+</p>
+
+<p align="center">
+  <img src="./images/aws-architecture-v2.svg" alt="V2">
+  <br>
+  <em>Figura 2: Arquitetura AWS v2</em>
+</p>
+
