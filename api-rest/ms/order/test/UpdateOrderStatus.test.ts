@@ -37,8 +37,17 @@ describe('UpdateOrderStatus.test', () => {
 
         const updateOrderStatus = new UpdateOrderStatus(orderRepository);
         const newOrderStatus = await updateOrderStatus.execute({ order_id: outputCreateOrder.order_id, status: "received" }); 
-       
         expect(newOrderStatus).toBe("received");
+
+        const preparingOrderStatus = await updateOrderStatus.execute({ order_id: outputCreateOrder.order_id, status: "preparing" });
+        expect(preparingOrderStatus).toBe("preparing");
+
+        const readyOrderStatus = await updateOrderStatus.execute({ order_id: outputCreateOrder.order_id, status: "ready" });
+        expect(readyOrderStatus).toBe("ready");
+
+        const finishedOrderStatus = await updateOrderStatus.execute({ order_id: outputCreateOrder.order_id, status: "finished" });
+        expect(finishedOrderStatus).toBe("finished");
+
         await connection.close();
     })
 

@@ -1,12 +1,11 @@
-import { OrderRepositoryDatabase, OrderRepositoryMemory } from "../src/infra/repository/OrderRepository";
-import { ProductRepositoryDatabase, ProductRepositoryMemory } from "../src/infra/repository/ProductRepository";
+import ClientGatewayHttp, { ClientGatewayHttpMemory } from "../src/infra/gateway/ClientGatewayHttp";
 
-import ClientGatewayHttp from "../src/infra/gateway/ClientGatewayHttp";
 import { CreateOrder } from "../src/application/usecase/CreateOrder";
 import { CreateProduct } from "../src/application/usecase/CreateProduct";
 import { GetAllOrders } from "../src/application/usecase/GetAllOrders";
-import { KnexAdapter } from "../src/infra/database/QueryBuilderDatabaseConnection";
-import PaymentGatewayHttp from "../src/infra/gateway/PaymentGatewayHttp";
+import { OrderRepositoryMemory } from "../src/infra/repository/OrderRepository";
+import { PaymentGatewayHttpMemory } from "../src/infra/gateway/PaymentGatewayHttp";
+import {ProductRepositoryMemory} from "../src/infra/repository/ProductRepository";
 import { UpdateOrderStatus } from "../src/application/usecase/UpdateOrderStatus";
 
 describe('GetAllOrders', () => {
@@ -53,11 +52,10 @@ describe('GetAllOrders', () => {
     })
 
     it('should get all orders in the correct order [ready > preparing > received]', async () => {
-        const connection = new KnexAdapter();
-        const orderRepository = new OrderRepositoryDatabase(connection);
-        const productRepository = new ProductRepositoryDatabase(connection);
-        const clientGateway = new ClientGatewayHttp();
-        const paymentGateway = new PaymentGatewayHttp();
+        const orderRepository = new OrderRepositoryMemory();
+        const productRepository = new ProductRepositoryMemory();
+        const clientGateway = new ClientGatewayHttpMemory();
+        const paymentGateway = new PaymentGatewayHttpMemory(orderRepository);
       
         const createProduct = new CreateProduct(productRepository)
         const createOrder = new CreateOrder(orderRepository, productRepository, clientGateway) 
@@ -118,13 +116,12 @@ describe('GetAllOrders', () => {
         expect(firstOrder?.status).toBe("received")
         expect(secondOrder?.status).toBe("preparing")
         expect(thirdOrder?.status).toBe("ready")
-      
+       
         expect(thirdOrderIndex).toBeLessThan(secondOrderIndex!)
         expect(thirdOrderIndex).toBeLessThan(firstOrderIndex!)
         expect(secondOrderIndex).toBeLessThan(firstOrderIndex!)
 
        expect(new Date(firstOrder!.created_at).getTime()).toBeLessThan(new Date(secondOrder!.created_at).getTime())
-
-       await connection.close();
     })
+
 })

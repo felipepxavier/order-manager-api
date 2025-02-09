@@ -106,7 +106,7 @@ export class OrderRepositoryDatabase implements OrderRepository {
 }
 
 export class OrderRepositoryMemory implements OrderRepository {
-    private orders: Order[] = [];
+    orders: Order[] = [];
 
     async getALLOrders(): Promise<Order[] | undefined> {
         return this.orders;
