@@ -63,27 +63,3 @@ export class PaymentRepositoryDatabase implements PaymentRepository {
         return Payment.restore(payment.payment_id, payment.order_id, payment.payment_method, payment.amount, payment.status);
     }
 }
-
-export class PaymentRepositoryMemory implements PaymentRepository {
-    private payments: Payment[] = [];
-
-    async savePayment(payment: Payment): Promise<void> {
-        this.payments.push(payment);
-    }
-    async processPayment(payment: Payment): Promise<{ payment_id: string, status: string }> {
-        //processa o pagamento com uma instituicao de pagamento
-        const newStatus  = 'approved';
-
-        return { payment_id: payment.payment_id, status: newStatus };
-    }
-    async updateStatus(payment: Payment): Promise<Payment> {
-        const index = this.payments.findIndex(p => p.payment_id === payment.payment_id);
-        this.payments[index] = payment;
-        return payment;
-    }
-
-    async getPaymentByOrderId(order_id: string): Promise<Payment | undefined> {
-        return this.payments.find(p => p.order_id === order_id);
-    }
-  
-}

@@ -1,22 +1,48 @@
+import ClientGatewayHttp from "../src/infra/gateway/ClientGatewayHttp";
 import { CreatePayment } from "../src/application/usecase/CreatePayment";
 import { GetPaymentStatus } from "../src/application/usecase/GetPaymentStatus";
-import { OrderGatewayHttpMemory } from "../src/infra/gateway/OrderGatewayHttp";
-import { PaymentRepositoryMemory } from "../src/infra/repository/PaymentRepository";
+import { KnexAdapter } from "../src/infra/database/QueryBuilderDatabaseConnection";
+import OrderGatewayHttp from "../src/infra/gateway/OrderGatewayHttp";
+import { PaymentRepositoryDatabase } from "../src/infra/repository/PaymentRepository";
+import { randomUUID } from "crypto";
 
 describe('GetPaymentStatus', () => {
+    let orderGateway: OrderGatewayHttp;
+    let paymentRepository: PaymentRepositoryDatabase;
+    let clientGateway: ClientGatewayHttp;
+
+     beforeEach(async () => {
+            const connection = new KnexAdapter();
+            orderGateway = new OrderGatewayHttp();
+             clientGateway = new ClientGatewayHttp();
+            paymentRepository = new PaymentRepositoryDatabase(connection);
+        })
 
     it("should get payment status correctly", async () => {
-        const paymentRepository = new PaymentRepositoryMemory();
-        const orderGateway = new OrderGatewayHttpMemory();
+
         const createPayment = new CreatePayment(paymentRepository, orderGateway);
         const getPaymentStatus = new GetPaymentStatus(paymentRepository, orderGateway);
 
+        const input = {
+            name: "John Test",
+            email: `john.doe${Math.random()}@gmail.com`,
+            cpf: "87748248800",
+          };
+          
+       const outputClient = await clientGateway.registerClient(input)
+       const product = await orderGateway.createProduct({
+        name: 'Product Test',
+        description: 'Product Test',
+        price: 100,
+        category: 'Test'
+       })
+       
         const orderData = {
-            client_id: '1',
+            client_id: outputClient.account_id,
             status: 'open',
             products: [
                 {
-                    product_id: '1',
+                    product_id: product.product_id,
                     quantity: 1,
                     price: 100
                 }
@@ -38,31 +64,40 @@ describe('GetPaymentStatus', () => {
     })
 
     it("should return an error if the order not found", async () => {
-        const paymentRepository = new PaymentRepositoryMemory();
-        const orderGateway = new OrderGatewayHttpMemory();
         const getPaymentStatus = new GetPaymentStatus(paymentRepository, orderGateway);
        
-        await expect(() => getPaymentStatus.execute({ order_id: '1' })).rejects.toThrow("Order not found");
+        await expect(() => getPaymentStatus.execute({ order_id: randomUUID() })).rejects.toThrow("Order not found");
     })
 
     it("should return an error if the payment not found", async () => {
-        const paymentRepository = new PaymentRepositoryMemory();
-        const orderGateway = new OrderGatewayHttpMemory();
         const getPaymentStatus = new GetPaymentStatus(paymentRepository, orderGateway);
+
+        const input = {
+            name: "John Test",
+            email: `john.doe${Math.random()}@gmail.com`,
+            cpf: "87748248800",
+          };
+          
+       const outputClient = await clientGateway.registerClient(input)
+       const product = await orderGateway.createProduct({
+        name: 'Product Test',
+        description: 'Product Test',
+        price: 100,
+        category: 'Test'
+       })
        
         const orderData = {
-            client_id: '1',
+            client_id: outputClient.account_id,
             status: 'open',
             products: [
                 {
-                    product_id: '1',
+                    product_id: product.product_id,
                     quantity: 1,
                     price: 100
                 }
             ]
         };
-
-        const orderCreated = await orderGateway.createOrder(orderData);
+       const orderCreated = await orderGateway.createOrder(orderData);
         
         await expect(() => getPaymentStatus.execute({ order_id: orderCreated.order_id })).rejects.toThrow("Payment not found");
     })
