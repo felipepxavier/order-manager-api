@@ -2,7 +2,6 @@ import { CreatePayment } from "../src/application/usecase/CreatePayment";
 import { GetPaymentStatus } from "../src/application/usecase/GetPaymentStatus";
 import { OrderGatewayHttpMemory } from "../src/infra/gateway/OrderGatewayHttp";
 import { PaymentRepositoryMemory } from "../src/infra/repository/PaymentRepository";
-import { randomUUID } from "crypto";
 
 describe('GetPaymentStatus', () => {
 
