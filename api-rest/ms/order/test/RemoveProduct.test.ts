@@ -1,12 +1,24 @@
 import { CreateProduct } from "../src/application/usecase/CreateProduct";
-import { ProductRepositoryMemory } from "../src/infra/repository/ProductRepository";
+import { KnexAdapter } from "../src/infra/database/QueryBuilderDatabaseConnection";
+import { ProductRepositoryDatabase } from "../src/infra/repository/ProductRepository";
 import { RemoveProduct } from "../src/application/usecase/RemoveProduct";
+import { randomUUID } from "crypto";
 
 describe('RemoveProduct.test', () => {
+
+      let productRepository: ProductRepositoryDatabase;
+      let createProduct: CreateProduct;
+      let connection: KnexAdapter;
+    
+      beforeEach(() => {
+        connection = new KnexAdapter();
+        productRepository = new ProductRepositoryDatabase(connection);
+        createProduct = new CreateProduct(productRepository);
+      });
+    
+
     it('should remove a product correctly', async () => {
-        const productRepository = new ProductRepositoryMemory();
-        jest.spyOn(productRepository, 'removeProduct')
-        const createProduct = new CreateProduct(productRepository);
+       jest.spyOn(productRepository, 'removeProduct')
 
         const product = {
             name: 'Product 1',
@@ -25,15 +37,13 @@ describe('RemoveProduct.test', () => {
     })
 
     it('should throw an error when the product is not found', async () => {
-        const productRepository = new ProductRepositoryMemory();
-        jest.spyOn(productRepository, 'removeProduct').mockResolvedValue(undefined)
         const removeProduct = new RemoveProduct(productRepository);
-        const product_id = '123';
-        try {
-            await removeProduct.execute(product_id);
-        } catch (error) {
-            expect(error).toBeInstanceOf(Error);
-            expect(error).toHaveProperty('message', 'Product not found');
-        }
+        const product_id = randomUUID();
+
+        await expect(removeProduct.execute(product_id)).rejects.toThrow('Product not found');
     })
+
+    afterEach(async () => {
+        await connection.close();
+    });
 })

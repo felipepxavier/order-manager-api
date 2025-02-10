@@ -13,8 +13,8 @@ export const config: { [key: string]: Knex.Config } = {
       ssl: { rejectUnauthorized: false }
     },
     pool: {
-      min: 2,
-      max: 20
+      min: 0,
+      max: 40
     }
   },
   test: {

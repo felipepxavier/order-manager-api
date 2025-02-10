@@ -1,20 +1,28 @@
-import ClientGatewayHttp, { ClientGatewayHttpMemory } from "../src/infra/gateway/ClientGatewayHttp";
-
+import ClientGatewayHttp, {  } from "../src/infra/gateway/ClientGatewayHttp";
 import { CreateOrder } from "../src/application/usecase/CreateOrder";
 import { CreateProduct } from "../src/application/usecase/CreateProduct";
 import { GetAllOrders } from "../src/application/usecase/GetAllOrders";
-import { OrderRepositoryMemory } from "../src/infra/repository/OrderRepository";
-import { PaymentGatewayHttpMemory } from "../src/infra/gateway/PaymentGatewayHttp";
-import {ProductRepositoryMemory} from "../src/infra/repository/ProductRepository";
+import { KnexAdapter } from "../src/infra/database/QueryBuilderDatabaseConnection";
+import { OrderRepositoryDatabase } from "../src/infra/repository/OrderRepository";
+import PaymentGatewayHttp from "../src/infra/gateway/PaymentGatewayHttp";
+import { ProductRepositoryDatabase } from "../src/infra/repository/ProductRepository";
 import { UpdateOrderStatus } from "../src/application/usecase/UpdateOrderStatus";
 
 describe('GetAllOrders', () => {
-    it('should get all orders correctly', async () => {
-        const orderRepository = new OrderRepositoryMemory();
-        const productRepository = new ProductRepositoryMemory();
-        const clientGateway = new ClientGatewayHttp();
+    let productRepository: ProductRepositoryDatabase;
+    let createProduct: CreateProduct;
+    let connection: KnexAdapter;
+    let orderRepository: OrderRepositoryDatabase;
+    
+    beforeEach(() => {
+        connection = new KnexAdapter();
+        productRepository = new ProductRepositoryDatabase(connection);
+        createProduct = new CreateProduct(productRepository);
+        orderRepository = new OrderRepositoryDatabase(connection);
+    });
 
-        const createProduct = new CreateProduct(productRepository)
+    it('should get all orders correctly', async () => {
+        const clientGateway = new ClientGatewayHttp();
         const createOrder = new CreateOrder(orderRepository, productRepository, clientGateway) 
         const getAllOrders = new GetAllOrders(orderRepository, productRepository, clientGateway)
 
@@ -37,25 +45,24 @@ describe('GetAllOrders', () => {
             { product_id: product1.product_id, quantity: 2 },
             { product_id: product2.product_id, quantity: 1 }
         ]
-        await createOrder.execute({ products: orderProdcuts1, client_id: outputClient!.account_id })
+        const order1 = await createOrder.execute({ products: orderProdcuts1, client_id: outputClient!.account_id })
 
         const orderProdcuts2 = [
             { product_id: product3.product_id, quantity: 1 },
             { product_id: product4.product_id, quantity: 2 }
         ]
-        await createOrder.execute({ products: orderProdcuts2, client_id: outputClient!.account_id })
+        const order2 = await createOrder.execute({ products: orderProdcuts2, client_id: outputClient!.account_id })
         const orders = await getAllOrders.execute()
 
-        expect(orders).toHaveLength(2);
-        expect(orders![0].products.length).toBe(orderProdcuts1.length)
-        expect(orders![1].products.length).toBe(orderProdcuts2.length)
+        expect(orders?.length).toBeTruthy()
+        expect(orders?.some(order => order.order_id === order1.order_id)).toBeTruthy();
+        expect(orders?.some(order => order.order_id === order2.order_id)).toBeTruthy();
     })
 
     it('should get all orders in the correct order [ready > preparing > received]', async () => {
-        const orderRepository = new OrderRepositoryMemory();
-        const productRepository = new ProductRepositoryMemory();
-        const clientGateway = new ClientGatewayHttpMemory();
-        const paymentGateway = new PaymentGatewayHttpMemory(orderRepository);
+        
+        const clientGateway = new ClientGatewayHttp();
+        const paymentGateway = new PaymentGatewayHttp();
       
         const createProduct = new CreateProduct(productRepository)
         const createOrder = new CreateOrder(orderRepository, productRepository, clientGateway) 
@@ -122,6 +129,9 @@ describe('GetAllOrders', () => {
         expect(secondOrderIndex).toBeLessThan(firstOrderIndex!)
 
        expect(new Date(firstOrder!.created_at).getTime()).toBeLessThan(new Date(secondOrder!.created_at).getTime())
-    })
+    },)
 
+    afterEach(async () => {
+        await connection.close();
+    });
 })

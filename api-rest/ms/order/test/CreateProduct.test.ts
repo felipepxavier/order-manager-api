@@ -1,9 +1,11 @@
 import { CreateProduct } from "../src/application/usecase/CreateProduct";
-import { ProductRepositoryMemory } from "../src/infra/repository/ProductRepository";
+import { KnexAdapter } from "../src/infra/database/QueryBuilderDatabaseConnection";
+import { ProductRepositoryDatabase } from "../src/infra/repository/ProductRepository";
 
 describe('CreateProduct.test', () => {
     it('should create a product correctly', async () => {
-        const productRepository = new ProductRepositoryMemory();
+        const connection = new KnexAdapter();
+        const productRepository = new ProductRepositoryDatabase(connection);
         const createProduct = new CreateProduct(productRepository);
         const product = {
             name: 'Product 1',
@@ -18,5 +20,6 @@ describe('CreateProduct.test', () => {
         expect(createdProduct).toHaveProperty('description', 'Description 1');
         expect(createdProduct).toHaveProperty('price', 100);
         expect(createdProduct).toHaveProperty('category', 'drink');
+        await connection.close();
     });
 })

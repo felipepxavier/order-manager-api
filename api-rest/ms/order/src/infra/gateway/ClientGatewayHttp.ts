@@ -22,28 +22,3 @@ class ApiError extends Error {
         this.response = { data: { message } };
     }
 }
-
-export class ClientGatewayHttpMemory implements ClientGateway {
-    private clients: any[] = [];
-
-    async getClientById(clientId: string): Promise<any> {
-        const client = this.clients.find(client => client.account_id === clientId);
-        if (!client) {
-            throw new ApiError("Client not found");
-        }
-        return client;
-    }
-   
-    async registerClient(input: any): Promise<any> {
-        const isEmailAlreadyRegistered = this.clients.find(client => client.email === input.email);
-        if (isEmailAlreadyRegistered) {
-            throw new ApiError("Email already registered");
-        }
-        const newClient = {
-            ...input,
-            account_id: randomUUID()
-        }
-        this.clients.push(newClient);
-        return newClient;
-    }
-}

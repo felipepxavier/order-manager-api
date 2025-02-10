@@ -105,26 +105,3 @@ export class OrderRepositoryDatabase implements OrderRepository {
     }
 }
 
-export class OrderRepositoryMemory implements OrderRepository {
-    orders: Order[] = [];
-
-    async getALLOrders(): Promise<Order[] | undefined> {
-        return this.orders;
-    }
-    async createOrder(order: Order): Promise<{ order_id: string, status: string }> {
-        this.orders.push(order);
-        return { order_id: order.order_id, status: order.getStatus() };
-    }
-    async updateStatus(order: Order): Promise<Order> {
-        const index = this.orders.findIndex((o) => o.order_id === order.order_id);
-        if (index !== -1) {
-            this.orders[index] = order;
-        } else {
-            this.orders.push(order);
-        }
-        return order;
-    }
-    async getOrderById(order_id: string): Promise<Order | undefined> {
-        return this.orders.find((order) => order.order_id === order_id);
-    }
-}
