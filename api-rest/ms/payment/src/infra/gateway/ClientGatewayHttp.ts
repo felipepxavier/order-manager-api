@@ -1,15 +1,17 @@
 import ClientGateway from "../../application/gateway/ClientGateway";
-import axios from "axios";
+import HttpClient from "../http/HttpClient";
 
+//interface adapter
 export default class ClientGatewayHttp implements ClientGateway {
+
+    constructor (readonly httpClient: HttpClient) {
+    }
+
     async registerClient(input: any): Promise<any> {
-        const response = await axios.post('http://localhost:3001/clients', input);
-        return response.data;
+        return this.httpClient.post('http://localhost:3001/clients', input);
     }
 
     async getClientById(clientId: string): Promise<any> {
-        const response = await axios.get(`http://localhost:3001/clients/${clientId}`); 
-        return response.data;
+        return this.httpClient.get(`http://localhost:3001/clients/${clientId}`); 
     }
 }
-

@@ -1,3 +1,4 @@
+import { AxiosAdapter } from "./src/infra/http/HttpClient";
 import ClientGatewayHttp from "./src/infra/gateway/ClientGatewayHttp";
 import { CreateOrder } from "./src/application/usecase/CreateOrder";
 import { CreateProduct } from "./src/application/usecase/CreateProduct";
@@ -116,7 +117,7 @@ createDatabase().then(() => createTables()).catch((err) => {
 
 const httpServer = new ExpressAdapter();
 const connection = new KnexAdapter();
-const clientGateway = new ClientGatewayHttp();
+const clientGateway = new ClientGatewayHttp(new AxiosAdapter());
 
 //ms2
 const productRepository = new ProductRepositoryDatabase(connection);
