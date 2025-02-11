@@ -1,27 +1,26 @@
+import HttpClient from "../http/HttpClient";
 import OrderGateway from "../../application/gateway/OrderGateway";
-import axios from "axios";
-import { randomUUID } from "crypto";
 
 export default class OrderGatewayHttp implements OrderGateway {
+
+    constructor (readonly httpClient: HttpClient) {
+    }
+
     async getOrderById(orderId: string): Promise<any> {
-        const response = await axios.get(`http://localhost:3002/orders/${orderId}`);
-        return response.data;
+        return this.httpClient.get(`http://localhost:3002/orders/${orderId}`);
     }
 
     async updateStatus({ order_id, ...rest }: any): Promise<any> {
-        const response = await axios.put(`http://localhost:3002/orders/status/${order_id}`, {
+        return this.httpClient.put(`http://localhost:3002/orders/status/${order_id}`, {
             ...rest,
             order_id,
         });
-        return response.data;
     }
     async createOrder(input: any): Promise<any> {
-        const response = await axios.post(`http://localhost:3002/orders`, input);
-        return response.data;
+        return this.httpClient.post(`http://localhost:3002/orders`, input);
     }
 
     async createProduct(input: any): Promise<any> {
-        const response = await axios.post(`http://localhost:3002/products`, input);
-        return response.data;
+        return this.httpClient.post(`http://localhost:3002/products`, input);
     }
 }

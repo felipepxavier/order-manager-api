@@ -1,3 +1,4 @@
+import { AxiosAdapter } from "./src/infra/http/HttpClient";
 import { CreatePayment } from "./src/application/usecase/CreatePayment";
 import { ExpressAdapter } from "./src/infra/http/HttpServer";
 import { GetPaymentStatus } from "./src/application/usecase/GetPaymentStatus";
@@ -111,7 +112,7 @@ const connection = new KnexAdapter();
 
 //ms3
 const paymentRepository = new PaymentRepositoryDatabase(connection);
-const orderGateway = new OrderGatewayHttp();
+const orderGateway = new OrderGatewayHttp(new AxiosAdapter());
 const createPayment = new CreatePayment(paymentRepository, orderGateway); 
 const getPaymentStatus = new GetPaymentStatus(paymentRepository, orderGateway);
 new PaymentController(httpServer, createPayment, getPaymentStatus); 

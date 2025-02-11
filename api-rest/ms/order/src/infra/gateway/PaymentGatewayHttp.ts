@@ -1,11 +1,14 @@
 import PaymentGateway, { PayInput } from "../../application/gateway/PaymentGateway";
 
+import HttpClient from "../http/HttpClient";
 import axios from 'axios';
 
 export default class PaymentGatewayHttp implements PaymentGateway {
+    constructor (readonly httpClient: HttpClient) {
+    }
+
     async pay(input: PayInput): Promise<any> {
-        const response = await axios.post('http://localhost:3003/payments', input);
-        return response.data;
+        return this.httpClient.post('http://localhost:3003/payments', input);
     }
 }
 
