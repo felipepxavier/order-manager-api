@@ -15,7 +15,7 @@ describe('CreatePayment.test', () => {
   
     beforeEach(async () => {
         connection = new KnexAdapter();
-        orderGateway = new OrderGatewayHttp();
+        orderGateway = new OrderGatewayHttp(new AxiosAdapter());
         clientGateway = new ClientGatewayHttp(new AxiosAdapter());
         paymentRepository = new PaymentRepositoryDatabase(connection);
     })

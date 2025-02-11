@@ -63,7 +63,7 @@ describe('GetAllOrders', () => {
     it('should get all orders in the correct order [ready > preparing > received]', async () => {
         
         const clientGateway = new ClientGatewayHttp(new AxiosAdapter());
-        const paymentGateway = new PaymentGatewayHttp();
+        const paymentGateway = new PaymentGatewayHttp(new AxiosAdapter());
       
         const createProduct = new CreateProduct(productRepository)
         const createOrder = new CreateOrder(orderRepository, productRepository, clientGateway) 
