@@ -1,3 +1,4 @@
+import { AxiosAdapter } from "../src/infra/http/HttpClient";
 import ClientGatewayHttp from "../src/infra/gateway/ClientGatewayHttp";
 import { CreatePayment } from "../src/application/usecase/CreatePayment";
 import { KnexAdapter } from "../src/infra/database/QueryBuilderDatabaseConnection";
@@ -15,7 +16,7 @@ describe('CreatePayment.test', () => {
     beforeEach(async () => {
         connection = new KnexAdapter();
         orderGateway = new OrderGatewayHttp();
-        clientGateway = new ClientGatewayHttp();
+        clientGateway = new ClientGatewayHttp(new AxiosAdapter());
         paymentRepository = new PaymentRepositoryDatabase(connection);
     })
     

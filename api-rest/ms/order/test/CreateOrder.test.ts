@@ -1,3 +1,4 @@
+import { AxiosAdapter } from "../src/infra/http/HttpClient";
 import ClientGatewayHttp from "../src/infra/gateway/ClientGatewayHttp";
 import { CreateOrder } from "../src/application/usecase/CreateOrder";
 import { CreateProduct } from "../src/application/usecase/CreateProduct";
@@ -11,7 +12,7 @@ describe('CreateOrder.test.ts', () => {
         const connection = new KnexAdapter();
         const orderRepository = new OrderRepositoryDatabase(connection);
         const productRepository = new ProductRepositoryDatabase(connection);
-        const clientGateway = new ClientGatewayHttp();
+        const clientGateway = new ClientGatewayHttp(new AxiosAdapter());
 
         const input = {
             name: "John Test",
