@@ -148,4 +148,8 @@ describe('CreatePayment.test', () => {
         };
         await expect(() => createPayment.execute(paymentData)).rejects.toThrow("Invalid Payment Method");
     })
+
+    afterEach(() => {
+        connection.close();
+    });
 })

@@ -14,7 +14,7 @@ export const config: { [key: string]: Knex.Config } = {
     },
     pool: {
       min: 0,
-      max: 40
+      max: 20
     }
   },
   test: {
@@ -27,8 +27,8 @@ export const config: { [key: string]: Knex.Config } = {
       password: process.env.DB_PASSWORD,
     },
     pool: {
-      min: 2,
-      max: 10
+      min: 0,
+      max: 20
     }
   },
 };

@@ -8,16 +8,17 @@ import { PaymentRepositoryDatabase } from "../src/infra/repository/PaymentReposi
 import { randomUUID } from "crypto";
 
 describe('GetPaymentStatus', () => {
+    let connection: KnexAdapter;
     let orderGateway: OrderGatewayHttp;
     let paymentRepository: PaymentRepositoryDatabase;
     let clientGateway: ClientGatewayHttp;
 
-     beforeEach(async () => {
-            const connection = new KnexAdapter();
-            orderGateway = new OrderGatewayHttp(new AxiosAdapter());
-             clientGateway = new ClientGatewayHttp(new AxiosAdapter());
-            paymentRepository = new PaymentRepositoryDatabase(connection);
-        })
+     beforeEach(() => {
+        connection = new KnexAdapter();
+        orderGateway = new OrderGatewayHttp(new AxiosAdapter());
+        clientGateway = new ClientGatewayHttp(new AxiosAdapter());
+        paymentRepository = new PaymentRepositoryDatabase(connection);
+    })
 
     it("should get payment status correctly", async () => {
 
@@ -102,4 +103,8 @@ describe('GetPaymentStatus', () => {
         
         await expect(() => getPaymentStatus.execute({ order_id: orderCreated.order_id })).rejects.toThrow("Payment not found");
     })
+
+    afterEach(() => {
+        connection.close();
+    });
 })

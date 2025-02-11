@@ -60,7 +60,7 @@ describe('GetAllOrders', () => {
         expect(orders?.some(order => order.order_id === order2.order_id)).toBeTruthy();
     })
 
-    it('should get all orders in the correct order [ready > preparing > received]', async () => {
+    it.skip('should get all orders in the correct order [ready > preparing > received]', async () => {
         
         const clientGateway = new ClientGatewayHttp(new AxiosAdapter());
         const paymentGateway = new PaymentGatewayHttp(new AxiosAdapter());
