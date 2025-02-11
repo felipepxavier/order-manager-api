@@ -16,7 +16,7 @@ describe('Order', () => {
       cpf: "87748248800",
     };
     const responseClient = await axios.post(
-      `${process.env.API_URL}:${process.env.API_PORT}/clients`,
+      `${process.env.API_CLIENT_GATEWAY}/clients`,
       client,
     );
     const client_id = responseClient.data.account_id;
@@ -104,7 +104,7 @@ describe('Order', () => {
       cpf: "87748248800",
     };
     const responseClient = await axios.post(
-      `${process.env.API_URL}:${process.env.API_PORT}/clients`,
+      `${process.env.API_CLIENT_GATEWAY}/clients`,
       client,
     );
     const client_id = responseClient.data.account_id;
@@ -133,7 +133,7 @@ describe('Order', () => {
       cpf: "87748248800",
     };
     const responseClient = await axios.post(
-      `${process.env.API_URL}:3001/clients`,
+      `${process.env.API_CLIENT_GATEWAY}/clients`,
       client,
     );
     const client_id = responseClient.data.account_id;
@@ -171,7 +171,7 @@ describe('Order', () => {
     };
     
     const paymentsResponse = await axios.post(
-      `${process.env.API_URL}:3003/payments`,
+      `${process.env.API_PAYMENT_GATEWAY}/payments`,
       payment,
     );
 

@@ -7,20 +7,20 @@ export default class OrderGatewayHttp implements OrderGateway {
     }
 
     async getOrderById(orderId: string): Promise<any> {
-        return this.httpClient.get(`http://localhost:3002/orders/${orderId}`);
+        return this.httpClient.get(`${process.env.API_ORDER_GATEWAY}/orders/${orderId}`);
     }
 
     async updateStatus({ order_id, ...rest }: any): Promise<any> {
-        return this.httpClient.put(`http://localhost:3002/orders/status/${order_id}`, {
+        return this.httpClient.put(`${process.env.API_ORDER_GATEWAY}/orders/status/${order_id}`, {
             ...rest,
             order_id,
         });
     }
     async createOrder(input: any): Promise<any> {
-        return this.httpClient.post(`http://localhost:3002/orders`, input);
+        return this.httpClient.post(`${process.env.API_ORDER_GATEWAY}/orders`, input);
     }
 
     async createProduct(input: any): Promise<any> {
-        return this.httpClient.post(`http://localhost:3002/products`, input);
+        return this.httpClient.post(`${process.env.API_ORDER_GATEWAY}/products`, input);
     }
 }

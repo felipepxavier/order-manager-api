@@ -18,7 +18,7 @@ describe('Payment', () => {
     };
    
     const responseClient = await axios.post(
-      `${process.env.API_url}:3001/clients`,
+      `${process.env.API_CLIENT_GATEWAY}/clients`,
       input,
     );
    
@@ -30,7 +30,7 @@ describe('Payment', () => {
       category: "Test",
     };
     const responseProduct = await axios.post(
-      `${process.env.API_URL}:3002/products`,
+      `${process.env.API_ORDER_GATEWAY}/products`,
       product,
     );
     const product_id = responseProduct.data.product_id;
@@ -45,7 +45,7 @@ describe('Payment', () => {
       ],
     };
     const responseOrder = await axios.post(
-      `${process.env.API_URL}:3002/orders`,
+      `${process.env.API_ORDER_GATEWAY}/orders`,
       order,
     );
     const order_id = responseOrder.data.order_id;
@@ -55,7 +55,7 @@ describe('Payment', () => {
       payment_method: "Pix",
     };
     const responsePayment = await axios.post(
-      `${process.env.API_URL}:3003/payments`,
+      `${process.env.API_URL}:${process.env.API_PORT}/payments`,
       payment,
     );
     const outputPayment = responsePayment.data;
@@ -69,7 +69,7 @@ describe('Payment', () => {
       payment_method: "credit",
     };
     const responsePayment = await axios.post(
-      `${process.env.API_URL}:3003/payments`,
+      `${process.env.API_URL}:${process.env.API_PORT}/payments`,
       payment,
     );
     expect(responsePayment.status).toBe(422);
@@ -83,7 +83,7 @@ describe('Payment', () => {
       cpf: "87748248800",
     };
     const responseClient = await axios.post(
-      `${process.env.API_URL}:3001/clients`,
+      `${process.env.API_CLIENT_GATEWAY}/clients`,
       client,
     );
   
@@ -96,7 +96,7 @@ describe('Payment', () => {
       category: "Test",
     };
     const responseProduct = await axios.post(
-      `${process.env.API_URL}:3002/products`,
+      `${process.env.API_ORDER_GATEWAY}/products`,
       product,
     );
   
@@ -112,7 +112,7 @@ describe('Payment', () => {
       ],
     };
     const responseOrder = await axios.post(
-      `${process.env.API_URL}:3002/orders`,
+      `${process.env.API_ORDER_GATEWAY}/orders`,
       order,
     );
   
@@ -123,14 +123,14 @@ describe('Payment', () => {
       payment_method: "Pix",
     };
     const responsePayment = await axios.post(
-      `${process.env.API_URL}:3003/payments`,
+      `${process.env.API_URL}:${process.env.API_PORT}/payments`,
       payment,
     );
    
     const outputPayment = responsePayment.data;
 
     const responsePaymentStatus = await axios.get(
-      `${process.env.API_URL}:3003/payments/status/${order_id}`,
+      `${process.env.API_URL}:${process.env.API_PORT}/payments/status/${order_id}`,
     );
     const outputPaymentStatus = responsePaymentStatus.data;
     expect(outputPaymentStatus).toBe(outputPayment.status);

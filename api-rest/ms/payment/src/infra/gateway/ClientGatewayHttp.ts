@@ -8,10 +8,10 @@ export default class ClientGatewayHttp implements ClientGateway {
     }
 
     async registerClient(input: any): Promise<any> {
-        return this.httpClient.post('http://localhost:3001/clients', input);
+        return this.httpClient.post(`${process.env.API_CLIENT_GATEWAY}/clients`, input);
     }
 
     async getClientById(clientId: string): Promise<any> {
-        return this.httpClient.get(`http://localhost:3001/clients/${clientId}`); 
+        return this.httpClient.get(`${process.env.API_CLIENT_GATEWAY}/clients/${clientId}`); 
     }
 }
